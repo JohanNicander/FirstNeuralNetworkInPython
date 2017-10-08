@@ -11,12 +11,7 @@ class NeuralNet:        # hej
         self.strucvec = strucvec
 
 
-def plot():
-    matr = np.array([[0, 1, 2, 3],
-                     [0, 1, 2, 4]])
-    plt.plot(matr[0, range(4)], matr[1, range(4)])
-    plt.show()
-    print(1)
-
-
-plot()
+matr = np.array([[0, 1, 2, 3],
+                 [0, 1, 2, 4]])
+plt.plot(matr[0, :], matr[1, :])
+plt.show()
