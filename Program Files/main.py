@@ -1,5 +1,5 @@
 import numpy as np
-import matplotlib.pyplot as pplot
+import matplotlib.pyplot as plt
 
 
 def function(var1, var2):
@@ -14,8 +14,8 @@ class NeuralNet:        # hej
 def plot():
     matr = np.array([[0, 1, 2, 3],
                      [0, 1, 2, 4]])
-    pplot.plot(matr[0, :], matr[1, :])
-    # pplot.show()
+    plt.plot(matr[0, range(4)], matr[1, range(4)])
+    plt.show()
     print(1)
 
 
