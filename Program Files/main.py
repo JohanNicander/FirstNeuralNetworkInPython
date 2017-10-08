@@ -14,8 +14,6 @@ def johan():
     plt.scatter(x_values, y_values)
     plt.show()
 
-# JOEL
-
 
 class NeuralNet:
     def __init__(self, strucvec=np.array([1, 1])):
