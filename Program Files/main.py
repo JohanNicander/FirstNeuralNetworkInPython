@@ -2,7 +2,6 @@ import pandas as pd
 import matplotlib.pyplot as plt
 import sys
 
-print(sys.path)
 
 # Read data
 indata = open('Data.txt', 'r')
