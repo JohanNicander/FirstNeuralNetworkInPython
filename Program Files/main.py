@@ -5,7 +5,8 @@ import sys
 print(sys.path)
 
 # Read data
-dataframe = pd.read_fwf("Data.txt")
+indata = file('Data.txt', 'r')
+dataframe = pd.read_fwf(indata)
 x_values = dataframe[['X']]
 y_values = dataframe[['Y']]
 
