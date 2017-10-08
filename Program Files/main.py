@@ -25,29 +25,31 @@ def johan():
 
 
 class NeuralNet:
-    def __init__(self, neuralshape=np.array([1, 1])):
-        self.setNeuralShape(neuralshape)
-        self.setNeuralStructure(self.neuralshape)
+    # Variabler:
+    # self.neuralShape
+    # self.a,   list of vectors containing node-values
+    # self.W,   list of matricies containing weights
+    # self.b,   list of vectors containing biases, LÄGG TILL I setNeuralShape
 
-    def setNeuralShape(self, neuralshape=np.array([1, 1])):
-        if type(neuralshape) is np.ndarray and neuralshape.ndim == 1:
-            self.neuralshape = neuralshape
+    def __init__(self, neuralShape=np.array([1, 1])):
+        self.setNeuralShape(neuralShape)
+
+    def setNeuralShape(self, neuralShape=np.array([1, 1])):
+        if type(neuralShape) is np.ndarray and neuralShape.ndim == 1:
+            self.neuralShape = neuralShape
         else:
-            self.neuralshape = np.array([1, 1])
-        self.setNeuralStructure(neuralshape)
-
-    def getNeuralShape(self):
-        return self.neuralshape
-
-    def setNeuralStructure(self, neuralshape=np.array([1, 1])):
-        # self.setNeuralShape(neuralshape), detta gör en inf-loop
+            self.neuralShape = np.array([1, 1])
         self.a = []
         self.W = []
         j = 0
-        for i in self.neuralshape:
+        for i in self.neuralShape:
             self.a.append(np.zeros(i))
             self.W.append(np.random.random_sample(np.array([i, j])))
             j = i
+        self.W.pop(0)
+
+    def getNeuralShape(self):
+        return self.neuralShape
 
     def getNeuralStructure(self):
         return self.a, self.W
