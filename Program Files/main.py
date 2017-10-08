@@ -1,5 +1,17 @@
-import numpy as np
-import matplotlib.pyplot as pplot
+import pandas as pd
+import matplotlib.pyplot as plt
+import sys
+
+print(sys.path)
+
+# Read data
+dataframe = pd.read_fwf("Data.txt")
+x_values = dataframe[['X']]
+y_values = dataframe[['Y']]
+
+# Visulize results
+plt.scatter(x_values, y_values)
+plt.show()
 
 
 def function(var1, var2):
@@ -10,14 +22,3 @@ class NeuralNet:        # hej
     def __init__(self):
         var = 3
         print(var)
-
-
-def plot():
-    matr = np.array([[0, 1, 2, 3],
-                     [0, 1, 2, 4]])
-    pplot.plot(matr[0, :], matr[1, :])
-    pplot.show()
-    print(1)
-
-
-plot()
