@@ -13,6 +13,10 @@ y_values = dataframe[['Y']]
 # Visulize results
 plt.scatter(x_values, y_values)
 plt.show()
+=======
+import numpy as np
+import matplotlib.pyplot as plt
+>>>>>>> master
 
 
 def function(var1, var2):
@@ -24,6 +28,7 @@ class NeuralNet:        # hej
         self.strucvec = strucvec
 
 
+<<<<<<< HEAD
 def plot():
     matr = np.array([[0, 1, 2, 3],
                      [0, 1, 2, 4]])
@@ -33,3 +38,9 @@ def plot():
 
 
 plot()
+=======
+matr = np.array([[0, 1, 2, 3],
+                 [0, 1, 2, 4]])
+plt.plot(matr[0, :], matr[1, :])
+plt.show()
+>>>>>>> master
