@@ -4,5 +4,5 @@ def function(var1, var2):
 
 class NeuralNet:        # hej
     def __init__(self):
-        var = 1
+        var = 2
         print(var)
