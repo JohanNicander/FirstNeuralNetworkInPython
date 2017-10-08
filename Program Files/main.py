@@ -37,6 +37,3 @@ def joel():
     print(str(neuralnettest.W))
     print(str(np.dot(neuralnettest.W[1], neuralnettest.a[0])))
     print(str(neuralnettest.W[1][2, 1]))
-
-
-joel()
