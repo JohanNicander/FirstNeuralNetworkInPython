@@ -24,19 +24,33 @@ def johan():
     plt.show()
 
 
-johan()
-
-
 class NeuralNet:
     def __init__(self, neuralshape=np.array([1, 1])):
-        self.neuralshape = neuralshape
+        self.setNeuralShape(neuralshape)
+        self.setNeuralStructure(self.neuralshape)
+
+    def setNeuralShape(self, neuralshape=np.array([1, 1])):
+        if type(neuralshape) is np.ndarray and neuralshape.ndim == 1:
+            self.neuralshape = neuralshape
+        else:
+            self.neuralshape = np.array([1, 1])
+        self.setNeuralStructure(neuralshape)
+
+    def getNeuralShape(self):
+        return self.neuralshape
+
+    def setNeuralStructure(self, neuralshape=np.array([1, 1])):
+        # self.setNeuralShape(neuralshape), detta gör en inf-loop
         self.a = []
         self.W = []
         j = 0
-        for i in neuralshape:
+        for i in self.neuralshape:
             self.a.append(np.zeros(i))
-            self.W.append(np.zeros(np.array([i, j])))
+            self.W.append(np.random.random_sample(np.array([i, j])))
             j = i
+
+    def getNeuralStructure(self):
+        return self.a, self.W
 
 
 def joel():
@@ -45,7 +59,13 @@ def joel():
     plt.plot(matr[0, :], matr[1, :])
     # plt.show()
     neuralnettest = NeuralNet(np.array([2, 4, 3]))
-    print(str(neuralnettest.a))
-    print(str(neuralnettest.W))
-    print(str(np.dot(neuralnettest.W[1], neuralnettest.a[0])))
-    print(str(neuralnettest.W[1][2, 1]))
+    try:
+        print(str(neuralnettest.a))
+        print(str(neuralnettest.W))
+        print(str(np.dot(neuralnettest.W[1], neuralnettest.a[0])))
+        print(str(neuralnettest.W[1][2, 1]))
+    except NameError:
+        var_exists = False
+    else:
+        var_exists = True
+    print(var_exists)
