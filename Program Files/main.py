@@ -6,8 +6,10 @@ import os
 # import abc    används för att göra abstract base class (typ interface)
 
 
-def tempfun(x):
-    return x
+def sigmoid(x):
+    if type(x) is not np.array:
+        raise TypeError("Wrong input type to sigmoid")
+    return np.divide(1, np.add(1, np.exp(-x)))
 
 
 class NeuralNet:
@@ -18,7 +20,7 @@ class NeuralNet:
     # self.b,       list of vectors containing biases
     # self.actfun,  aktiveringsfunktion
 
-    def __init__(self, neuralShape=np.array([1, 1]), actfun=tempfun):
+    def __init__(self, neuralShape=np.array([1, 1]), actfun=sigmoid):
         self.setNeuralShape(neuralShape, actfun)
 
     def setNeuralShape(self, neuralShape=None, actfun=None):
@@ -76,7 +78,7 @@ def joel():
     matr = np.array([[0, 1, 2, 3],
                      [0, 1, 2, 4]])
     try:
-        temp = np.add(matr, matr)
+        temp = np.add(1, matr)
     except:
         print("Doesn't work")
     else:
