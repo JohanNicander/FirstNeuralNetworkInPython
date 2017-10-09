@@ -3,6 +3,7 @@ import matplotlib.pyplot as plt
 from sklearn import linear_model
 import numpy as np
 import os
+# import abc    används för att göra abstract base class (typ interface)
 
 
 def tempfun(x):
@@ -20,16 +21,17 @@ class NeuralNet:
     def __init__(self, neuralShape=np.array([1, 1]), actfun=tempfun):
         self.setNeuralShape(neuralShape, actfun)
 
-    def setNeuralShape(self, neuralShape, actfun):  # Vill ha =self.neuralShape, =self.actfun, som default
+    # Vill ha =self.neuralShape, =self.actfun, som default
+    def setNeuralShape(self, neuralShape=None, actfun=None):
         if type(neuralShape) is np.ndarray and neuralShape.ndim == 1:
             self.neuralShape = neuralShape
         else:
-            self.neuralShape = np.array([1, 1])
+            pass
         if callable(actfun):
             self.actfun = actfun
             # TODO: Indikera att något gått fel
         else:
-            self.actfun = tempfun
+            pass
             # TODO: Indikera att något gått fel
         self.a = []
         self.W = []
