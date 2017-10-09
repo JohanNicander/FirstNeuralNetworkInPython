@@ -21,18 +21,25 @@ class NeuralNet:
     def __init__(self, neuralShape=np.array([1, 1]), actfun=tempfun):
         self.setNeuralShape(neuralShape, actfun)
 
-    # Vill ha =self.neuralShape, =self.actfun, som default
     def setNeuralShape(self, neuralShape=None, actfun=None):
-        if type(neuralShape) is np.ndarray and neuralShape.ndim == 1:
+        # Input checks
+        if neuralShape is None:
+            pass
+        elif type(neuralShape) is np.ndarray and neuralShape.ndim == 1:
             self.neuralShape = neuralShape
         else:
+            # TODO: Indikera att något gått fel
             pass
-        if callable(actfun):
+
+        if actfun is None:
+            pass
+        elif callable(actfun):
             self.actfun = actfun
-            # TODO: Indikera att något gått fel
         else:
-            pass
             # TODO: Indikera att något gått fel
+            pass
+
+        # Initialize a, W, b
         self.a = []
         self.W = []
         self.b = []
