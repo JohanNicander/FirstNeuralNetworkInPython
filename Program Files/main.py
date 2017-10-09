@@ -5,6 +5,45 @@ import numpy as np
 import os
 
 
+def tempfun(x):
+    return x
+
+
+class NeuralNet:
+    # Variabler:
+    # self.neuralShape
+    # self.a,       list of vectors containing node-values
+    # self.W,       list of matricies containing weights
+    # self.b,       list of vectors containing biases
+    # self.actfun,  aktiveringsfunktion
+
+    def __init__(self, neuralShape=np.array([1, 1]), actfun=tempfun):
+        self.setNeuralShape(neuralShape, actfun)
+
+    def setNeuralShape(self, neuralShape, actfun):  # Vill ha =self.neuralShape, =self.actfun, som default
+        if type(neuralShape) is np.ndarray and neuralShape.ndim == 1:
+            self.neuralShape = neuralShape
+        else:
+            self.neuralShape = np.array([1, 1])
+        if callable(actfun):
+            self.actfun = actfun
+            # TODO: Indikera att något gått fel
+        else:
+            self.actfun = tempfun
+            # TODO: Indikera att något gått fel
+        self.a = []
+        self.W = []
+        self.b = []
+        j = 0
+        for i in self.neuralShape:
+            self.a.append(np.zeros(i))
+            self.W.append(np.random.random_sample(np.array([i, j])))
+            self.b.append(np.random.random(i))
+            j = i
+        self.W.pop(0)
+        self.b.pop(0)
+
+
 def johan():
     # Read data
     path = os.path.dirname(os.path.abspath(__file__))
@@ -24,50 +63,31 @@ def johan():
     plt.show()
 
 
-class NeuralNet:
-    # Variabler:
-    # self.neuralShape
-    # self.a,   list of vectors containing node-values
-    # self.W,   list of matricies containing weights
-    # self.b,   list of vectors containing biases, LÄGG TILL I setNeuralShape
-
-    def __init__(self, neuralShape=np.array([1, 1])):
-        self.setNeuralShape(neuralShape)
-
-    def setNeuralShape(self, neuralShape=np.array([1, 1])):
-        if type(neuralShape) is np.ndarray and neuralShape.ndim == 1:
-            self.neuralShape = neuralShape
-        else:
-            self.neuralShape = np.array([1, 1])
-        self.a = []
-        self.W = []
-        j = 0
-        for i in self.neuralShape:
-            self.a.append(np.zeros(i))
-            self.W.append(np.random.random_sample(np.array([i, j])))
-            j = i
-        self.W.pop(0)
-
-    def getNeuralShape(self):
-        return self.neuralShape
-
-    def getNeuralStructure(self):
-        return self.a, self.W
-
-
 def joel():
     matr = np.array([[0, 1, 2, 3],
                      [0, 1, 2, 4]])
+    try:
+        temp = np.add(matr, matr)
+    except:
+        print("Doesn't work")
+    else:
+        print(str(temp))
     plt.plot(matr[0, :], matr[1, :])
     # plt.show()
     neuralnettest = NeuralNet(np.array([2, 4, 3]))
     try:
         print(str(neuralnettest.a))
         print(str(neuralnettest.W))
-        print(str(np.dot(neuralnettest.W[1], neuralnettest.a[0])))
+        print(str(neuralnettest.b))
+        print(str(neuralnettest.actfun(np.array([1, 2, 3]))))
+        print(str(np.add(np.dot(neuralnettest.W[0], neuralnettest.a[0]),
+                         neuralnettest.b[0])))
         print(str(neuralnettest.W[1][2, 1]))
     except NameError:
         var_exists = False
     else:
         var_exists = True
     print(var_exists)
+
+
+joel()
