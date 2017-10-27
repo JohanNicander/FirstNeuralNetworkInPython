@@ -64,14 +64,16 @@ class NeuralNet:
         self.W.pop(0)
         self.b.pop(0)
 
-    def propagate(self, input):
+    def propagate(self, x):
         # Input checks
-        if input.shape[0] != self.neuralShape[0]:
-            raise ValueError("argument input must be of proper size")
+        if x.shape[0] != self.neuralShape[0]:
+            raise ValueError("x.shape[0] must equal neuralShape[0]")
+        if x.ndim == 1:
+            x.shape = [len(x), 1]
         B = []
         for b in self.b:
-            B.append(np.multiply(b, np.ones([b.shape[0], input.shape[1]])))
-
+            B.append(np.multiply(b, np.ones([b.shape[0], x.shape[1]])))
+        self.a[0] = x
         for i in range(0, len(self.b) - 2):
             self.z[i + 1] = np.add(B[i], np.dot(self.W[i], self.a[i]))
             self.a[i + 1] = self.actfun(self.z[i + 1])
@@ -126,3 +128,11 @@ def joel():
                   [[1, 2], [2, 3], [3, 4]], [[1, 2], [2, 3], [3, 4]]])
     print(a.shape)
 
+    b = np.ones([4, 3])
+    c = np.array([1, 2, 3, 4])
+    c.shape = [4, 1]
+    print(str(np.multiply(c, b)))
+    print(str(np.multiply(c, b).shape))
+
+
+joel()
