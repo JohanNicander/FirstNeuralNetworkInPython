@@ -17,6 +17,14 @@ def sigmoid(x):
     return np.divide(1, np.add(1, np.exp(-x)))
 
 
+def reLU(x):
+    return np.maximum(0, x)
+
+
+def reLUPRIME(x):
+    return np.heaviside(x, 0.5)
+
+
 class NeuralNet:
     # Variables:
     # self.neuralShape  vector describing the network,
@@ -134,5 +142,6 @@ def joel():
     print(str(np.multiply(c, b)))
     print(str(np.multiply(c, b).shape))
 
-
-joel()
+    d = np.array([[1, -2, 0, -3], [-6, 9, 2, -5]])
+    print(str(reLU(d)))
+    print(str(reLUPRIME(d)))
