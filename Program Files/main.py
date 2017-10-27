@@ -65,15 +65,16 @@ class NeuralNet:
         self.b.pop(0)
 
     def propagate(self, input):
-        # fattar inte hur man lopar över en lista med np.ndarryobjekt
-        # förutsätter att vi inte definerar a
-
         # Input checks
-        # TODO
+        if input.shape[0] != self.neuralShape[0]:
+            raise ValueError("argument input must be of proper size")
+        B = []
+        for b in self.b:
+            B.append(np.multiply(b, np.ones([b.shape[0], input.shape[1]])))
 
-        for i in range(0, len(self.b)):
-            input = self.actfun(np.add(self.b, np.dot(self.W, input)))
-        return input
+        for i in range(0, len(self.b) - 2):
+            self.z[i + 1] = np.add(B[i], np.dot(self.W[i], self.a[i]))
+            self.a[i + 1] = self.actfun(self.z[i + 1])
 
 
 def johan():
@@ -111,7 +112,7 @@ def joel():
         # print(str(neuralnettest.a))
         print(str(neuralnettest.W))
         print(str(neuralnettest.b))
-        # print(str(neuralnettest.actfun(np.array([1, 2, 3]))))
+        print(str(neuralnettest.actfun(np.array([1, 2, 3]))))
         # print(str(np.add(np.dot(neuralnettest.W[0], neuralnettest.a[0]),
         #                 neuralnettest.b[0])))
         print(str(neuralnettest.W[1][2, 1]))
@@ -121,12 +122,7 @@ def joel():
         var_exists = True
     print(var_exists)
 
-    a = np.array([[1, 2], [2, 3], [3, 4]])
+    a = np.array([[[1, 2], [2, 3], [3, 4]], [[1, 2], [2, 3], [3, 4]],
+                  [[1, 2], [2, 3], [3, 4]], [[1, 2], [2, 3], [3, 4]]])
     print(a.shape)
 
-    tmp = np.array([1, 2])
-    if type(tmp) is not np.ndarray:
-        print('En array är INTE en array')
-        print('En array är en ' + str(type(tmp)))
-    else:
-        print('En array är en array')
