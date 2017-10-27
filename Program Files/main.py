@@ -6,6 +6,13 @@ import os
 # import abc    används för att göra abstract base class (typ interface)
 
 
+import sys
+import io
+
+sys.stdout = io.TextIOWrapper(sys.stdout.detach(), encoding='utf-8')
+sys.stderr = io.TextIOWrapper(sys.stderr.detach(), encoding='utf-8')
+
+
 def sigmoid(x):
     if type(x) is not np.ndarray:
         raise TypeError("Wrong input type to sigmoid")
@@ -61,7 +68,7 @@ class NeuralNet:
         # TODO
 
         for i in range(0, len(self.b)):
-            input = self.actfun(np.add(b, np.dot(self.W, input)))
+            input = self.actfun(np.add(self.b, np.dot(self.W, input)))
         return input
 
 
@@ -89,7 +96,7 @@ def joel():
                      [0, 1, 2, 4]])
     try:
         temp = np.add(1, matr)
-    except:
+    except Exception as e:
         print("Doesn't work")
     else:
         print(str(temp))
