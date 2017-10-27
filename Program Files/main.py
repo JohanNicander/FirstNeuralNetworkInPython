@@ -17,6 +17,14 @@ def sigmoid(x):
     return np.divide(1, np.add(1, np.exp(-x)))
 
 
+def reLU(x):
+    return np.maximum(0, x)
+
+
+def reLUPRIME(x):
+    return np.heaviside(x, 0.5)
+
+
 class NeuralNet:
     # Variables:
     # self.neuralShape  vector describing the network,
@@ -61,16 +69,19 @@ class NeuralNet:
         self.W.pop(0)
         self.b.pop(0)
 
-    def propagate(self, input):
-        # fattar inte hur man lopar över en lista med np.ndarryobjekt
-        # förutsätter att vi inte definerar a
-
+    def propagate(self, x):
         # Input checks
-        # TODO
-
-        for i in range(0, len(self.b)):
-            input = self.actfun(np.add(self.b, np.dot(self.W, input)))
-        return input
+        if x.shape[0] != self.neuralShape[0]:
+            raise ValueError("x.shape[0] must equal neuralShape[0]")
+        if x.ndim == 1:
+            x.shape = [len(x), 1]
+        B = []
+        for b in self.b:
+            B.append(np.multiply(b, np.ones([b.shape[0], x.shape[1]])))
+        self.a[0] = x
+        for i in range(0, len(self.b) - 2):
+            self.z[i + 1] = np.add(B[i], np.dot(self.W[i], self.a[i]))
+            self.a[i + 1] = self.actfun(self.z[i + 1])
 
     def gradientCalculation(self, x, y):
         self.propagate(x)
@@ -139,9 +150,12 @@ def joel():
     a = np.array([[1, 2], [2, 3], [3, 4]])
     print(a.shape)
 
-    tmp = np.array([1, 2])
-    if type(tmp) is not np.ndarray:
-        print('En array är INTE en array')
-        print('En array är en ' + str(type(tmp)))
-    else:
-        print('En array är en array')
+    b = np.ones([4, 3])
+    c = np.array([1, 2, 3, 4])
+    c.shape = [4, 1]
+    print(str(np.multiply(c, b)))
+    print(str(np.multiply(c, b).shape))
+
+    d = np.array([[1, -2, 0, -3], [-6, 9, 2, -5]])
+    print(str(reLU(d)))
+    print(str(reLUPRIME(d)))
