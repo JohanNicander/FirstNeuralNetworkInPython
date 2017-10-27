@@ -23,7 +23,6 @@ class NeuralNet:
     #       first element = #input nodes, last element = #output nodes
     # self.a,           list of vectors containing node-values after activation
     # self.z,           list if vectors containing node-values befor activation
-    # self.d            list of vectors containing node-errors
     # self.W,           list of matricies containing weights
     # self.b,           list of vectors containing biases
     # self.actfun,      activation function
@@ -48,16 +47,14 @@ class NeuralNet:
             raise ValueError("argument actfun must be a (callable) function")
 
         # Initialize a, W, b
-        self.a = []
-        self.z = []
-        self.d = []
+        # self.a = []
+        # self.z = []
         self.W = []
         self.b = []
         j = 0
         for i in self.neuralShape:
-            self.a.append(np.zeros(i))
-            self.d.append(np.zeros(i))
-            self.z.append(np.zeros(i))
+            # self.a.append(np.zeros(i))
+            # self.z.append(np.zeros(i))
             self.W.append(np.random.random_sample(np.array([i, j])))
             self.b.append(np.random.random(i))
             j = i
@@ -65,16 +62,33 @@ class NeuralNet:
         self.b.pop(0)
 
     def propagate(self, input):
-        # Input checks
-        if input.shape[0] != self.neuralShape[0]:
-            raise ValueError("argument input must be of proper size")
-        B = []
-        for b in self.b:
-            B.append(np.multiply(b, np.ones([b.shape[0], input.shape[1]])))
+        # fattar inte hur man lopar över en lista med np.ndarryobjekt
+        # förutsätter att vi inte definerar a
 
-        for i in range(0, len(self.b) - 2):
-            self.z[i + 1] = np.add(B[i], np.dot(self.W[i], self.a[i]))
-            self.a[i + 1] = self.actfun(self.z[i + 1])
+        # Input checks
+        # TODO
+
+        for i in range(0, len(self.b)):
+            input = self.actfun(np.add(self.b, np.dot(self.W, input)))
+        return input
+
+    def gradientCalculation(self, x, y):
+        self.propagate(x)
+
+        # //TODO: Flytta till init train
+        d = []
+        dJdW = []
+        for i in range(0, len(self.neuralShape)):
+            d[i] = np.zeros(self.a[i].shape)
+            dJdW[i] = np.zeros(self.W[i - 1].shape)
+        dJdW.pop(0)
+
+        d[-1] = np.multiply(self.a[-1] - y,
+                            self.LAST_ACTIVATION_PRIME(self.z[-1]))
+        for i in range(1, len(self.neuralShape)):
+            d[-i] = np.multiply(self.a[-i] - y,
+                                self.LAST_ACTIVATION_PRIME(self.z[-i]))
+            dJdW[-i] = np.dot(self.a[-i - 1].T, d[-i])
 
 
 def johan():
@@ -112,7 +126,7 @@ def joel():
         # print(str(neuralnettest.a))
         print(str(neuralnettest.W))
         print(str(neuralnettest.b))
-        print(str(neuralnettest.actfun(np.array([1, 2, 3]))))
+        # print(str(neuralnettest.actfun(np.array([1, 2, 3]))))
         # print(str(np.add(np.dot(neuralnettest.W[0], neuralnettest.a[0]),
         #                 neuralnettest.b[0])))
         print(str(neuralnettest.W[1][2, 1]))
@@ -122,7 +136,12 @@ def joel():
         var_exists = True
     print(var_exists)
 
-    a = np.array([[[1, 2], [2, 3], [3, 4]], [[1, 2], [2, 3], [3, 4]],
-                  [[1, 2], [2, 3], [3, 4]], [[1, 2], [2, 3], [3, 4]]])
+    a = np.array([[1, 2], [2, 3], [3, 4]])
     print(a.shape)
 
+    tmp = np.array([1, 2])
+    if type(tmp) is not np.ndarray:
+        print('En array är INTE en array')
+        print('En array är en ' + str(type(tmp)))
+    else:
+        print('En array är en array')
