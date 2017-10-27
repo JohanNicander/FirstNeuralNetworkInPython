@@ -7,7 +7,7 @@ import os
 
 
 def sigmoid(x):
-    if type(x) is not np.array:
+    if type(x) is not np.ndarray:
         raise TypeError("Wrong input type to sigmoid")
     return np.divide(1, np.add(1, np.exp(-x)))
 
@@ -112,10 +112,11 @@ def joel():
 
     a = np.array([[1, 2], [2, 3], [3, 4]])
     print(a.shape)
+
     tmp = np.array([1, 2])
-    if tmp is not np.ndarray:
+    if type(tmp) is not np.ndarray:
         print('En array är INTE en array')
-        print('En array är en ' + str(type(tmp))
+        print('En array är en ' + str(type(tmp)))
     else:
         print('En array är en array')
 
