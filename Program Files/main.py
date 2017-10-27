@@ -3,11 +3,9 @@ import matplotlib.pyplot as plt
 from sklearn import linear_model
 import numpy as np
 import os
-# import abc    används för att göra abstract base class (typ interface)
-
-
 import sys
 import io
+# import abc    används för att göra abstract base class (typ interface)
 
 sys.stdout = io.TextIOWrapper(sys.stdout.detach(), encoding='utf-8')
 sys.stderr = io.TextIOWrapper(sys.stderr.detach(), encoding='utf-8')
@@ -20,10 +18,12 @@ def sigmoid(x):
 
 
 class NeuralNet:
-    # Variabler:
+    # Variables:
     # self.neuralShape  vector describing the network,
     #       first element = #input nodes, last element = #output nodes
-    # self.a,           list of vectors containing node-values
+    # self.a,           list of vectors containing node-values after activation
+    # self.z,           list if vectors containing node-values befor activation
+    # self.d            list of vectors containing node-errors
     # self.W,           list of matricies containing weights
     # self.b,           list of vectors containing biases
     # self.actfun,      activation function
@@ -48,12 +48,16 @@ class NeuralNet:
             raise ValueError("argument actfun must be a (callable) function")
 
         # Initialize a, W, b
-        # self.a = []       #Troligen onödig
+        self.a = []
+        self.z = []
+        self.d = []
         self.W = []
         self.b = []
         j = 0
         for i in self.neuralShape:
-            # self.a.append(np.zeros(i))       #Troligen onödig
+            self.a.append(np.zeros(i))
+            self.d.append(np.zeros(i))
+            self.z.append(np.zeros(i))
             self.W.append(np.random.random_sample(np.array([i, j])))
             self.b.append(np.random.random(i))
             j = i
@@ -126,6 +130,3 @@ def joel():
         print('En array är en ' + str(type(tmp)))
     else:
         print('En array är en array')
-
-
-joel()
