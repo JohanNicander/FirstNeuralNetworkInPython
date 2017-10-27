@@ -14,11 +14,12 @@ def sigmoid(x):
 
 class NeuralNet:
     # Variabler:
-    # self.neuralShape
-    # self.a,       list of vectors containing node-values
-    # self.W,       list of matricies containing weights
-    # self.b,       list of vectors containing biases
-    # self.actfun,  aktiveringsfunktion
+    # self.neuralShape  vector describing the network,
+    #       first element = #input nodes, last element = #output nodes
+    # self.a,           list of vectors containing node-values
+    # self.W,           list of matricies containing weights
+    # self.b,           list of vectors containing biases
+    # self.actfun,      activation function
 
     def __init__(self, neuralShape=np.array([1, 1]), actfun=sigmoid):
         self.setNeuralShape(neuralShape, actfun)
@@ -30,29 +31,38 @@ class NeuralNet:
         elif type(neuralShape) is np.ndarray and neuralShape.ndim == 1:
             self.neuralShape = neuralShape
         else:
-            # TODO: Indikera att något gått fel
-            pass
+            raise ValueError("Argument neuralShape must be a numpy array")
 
         if actfun is None:
             pass
         elif callable(actfun):
             self.actfun = actfun
         else:
-            # TODO: Indikera att något gått fel
-            pass
+            raise ValueError("argument actfun must be a (callable) function")
 
         # Initialize a, W, b
-        self.a = []
+        # self.a = []       #Troligen onödig
         self.W = []
         self.b = []
         j = 0
         for i in self.neuralShape:
-            self.a.append(np.zeros(i))
+            # self.a.append(np.zeros(i))       #Troligen onödig
             self.W.append(np.random.random_sample(np.array([i, j])))
             self.b.append(np.random.random(i))
             j = i
         self.W.pop(0)
         self.b.pop(0)
+
+    def propagate(self, input):
+        # fattar inte hur man lopar över en lista med np.ndarryobjekt
+        # förutsätter att vi inte definerar a
+
+        # Input checks
+        # TODO
+
+        for i in range(0, len(self.b)):
+            input = self.actfun(np.add(b, np.dot(self.W, input)))
+        return input
 
 
 def johan():
@@ -87,18 +97,27 @@ def joel():
     # plt.show()
     neuralnettest = NeuralNet(np.array([2, 4, 3]))
     try:
-        print(str(neuralnettest.a))
+        # print(str(neuralnettest.a))
         print(str(neuralnettest.W))
         print(str(neuralnettest.b))
-        print(str(neuralnettest.actfun(np.array([1, 2, 3]))))
-        print(str(np.add(np.dot(neuralnettest.W[0], neuralnettest.a[0]),
-                         neuralnettest.b[0])))
+        # print(str(neuralnettest.actfun(np.array([1, 2, 3]))))
+        # print(str(np.add(np.dot(neuralnettest.W[0], neuralnettest.a[0]),
+        #                 neuralnettest.b[0])))
         print(str(neuralnettest.W[1][2, 1]))
     except NameError:
         var_exists = False
     else:
         var_exists = True
     print(var_exists)
+
+    a = np.array([[1, 2], [2, 3], [3, 4]])
+    print(a.shape)
+    tmp = np.array([1, 2])
+    if tmp is not np.ndarray:
+        print('En array är INTE en array')
+        print('En array är en ' + str(type(tmp))
+    else:
+        print('En array är en array')
 
 
 joel()
