@@ -17,12 +17,49 @@ def sigmoid(x):
     return np.divide(1, np.add(1, np.exp(-x)))
 
 
+def sigmoidPRIME(x):
+    if type(x) is not np.ndarray:
+        raise TypeError("Wrong input type to sigmoidPRIME")
+    return np.divide(np.exp(x), np.square(np.add(1, np.exp(x))))
+
+
 def reLU(x):
+    if type(x) is not np.ndarray:
+        raise TypeError("Wrong input type to reLU")
     return np.maximum(0, x)
 
 
 def reLUPRIME(x):
+    if type(x) is not np.ndarray:
+        raise TypeError("Wrong input type to reLUPRIME")
     return np.heaviside(x, 0.5)
+
+
+def softmax(x):
+    if type(x) is not np.ndarray:
+        raise TypeError("Wrong input type to softmax")
+    return np.exp(x) / np.sum(np.exp(x), axis=0)
+# //TODO: Kontrolera att summering är över rätt axel
+# //TODO: kan kanske villja göra något med -max eller nått för inte inf
+
+
+def softmaxPRIME(x):
+    if type(x) is not np.ndarray:
+        raise TypeError("Wrong input type to softmaxPRIME")
+    return 0  # //TODO: Detta känns jättefel
+#   jag får: (e^x)'*sum(e_k^x)-(e^x)*(sum(e_k^x))'=0
+
+
+def linear(x, a):
+    if type(x) is not np.ndarray or type(a) is not np.ndarray:
+        raise TypeError("Wrong input type to linear")
+    return np.multiply(x, a)  # //TODO: Dimentioner och så...
+
+
+def linearPRIME(a):
+    if type(a) is not np.ndarray:
+        raise TypeError("Wrong input type to linearPRIME")
+    return a  # //TODO: ÖM... Ja..
 
 
 class NeuralNet:
@@ -39,7 +76,7 @@ class NeuralNet:
         self.setNeuralShape(neuralShape, actfun)
 
     def setNeuralShape(self, neuralShape=None, actfun=None):
-        # Input checks
+        # Input checks  //TODO: Känns inte som att de bode få vara None
         if neuralShape is None:
             pass
         elif type(neuralShape) is np.ndarray and neuralShape.ndim == 1:
@@ -95,11 +132,11 @@ class NeuralNet:
         dJdW.pop(0)
 
         d[-1] = np.multiply(self.a[-1] - y,
-                            self.LAST_ACTIVATION_PRIME(self.z[-1]))
+                            self.actfun[-1](self.z[-1]))
         for i in range(1, len(self.neuralShape)):
             dJdW[-i] = np.dot(self.a[-i - 1].T, d[-i])
             d[-i] = np.dot(d[-i - 1], self.W[-i].T) * \
-                self.LAST_ACTIVATION_PRIME(self.z[-i - 1])
+                self.actfun[-i - 1](self.z[-i - 1])
             # \\TODO: Kolla index
 
 
