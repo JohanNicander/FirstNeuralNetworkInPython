@@ -98,9 +98,10 @@ class NeuralNet:
         d[-1] = np.multiply(self.a[-1] - y,
                             self.LAST_ACTIVATION_PRIME(self.z[-1]))
         for i in range(1, len(self.neuralShape)):
-            d[-i] = np.multiply(self.a[-i] - y,
-                                self.LAST_ACTIVATION_PRIME(self.z[-i]))
             dJdW[-i] = np.dot(self.a[-i - 1].T, d[-i])
+            d[-i] = np.dot(d[-i - 1], self.W[-i].T) * \
+                self.LAST_ACTIVATION_PRIME(self.z[-i - 1])
+            # \\TODO: Kolla index
 
 
 def johan():
