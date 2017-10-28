@@ -112,12 +112,9 @@ class NeuralNet:
             raise ValueError("x.shape[0] must equal neuralShape[0]")
         if x.ndim == 1:
             x.shape = [len(x), 1]
-        B = []
-        for b in self.b:
-            B.append(np.multiply(b, np.ones([b.shape[0], x.shape[1]])))
         self.a[0] = x
         for i in range(0, len(self.b) - 2):
-            self.z[i + 1] = np.add(B[i], np.dot(self.W[i], self.a[i]))
+            self.z[i + 1] = np.add(self.b[i], np.dot(self.W[i], self.a[i]))
             self.a[i + 1] = self.actfun(self.z[i + 1])
 
     def gradientCalculation(self, x, y):
@@ -191,9 +188,9 @@ def joel():
     b = np.ones([4, 3])
     c = np.array([1, 2, 3, 4])
     c.shape = [4, 1]
-    print(str(np.multiply(c, b)))
-    print(str(np.multiply(c, b).shape))
+    print(str(np.add(c, b)))
+    print(str(np.add(c, b).shape))
 
     d = np.array([[1, -2, 0, -3], [-6, 9, 2, -5]])
-    print(str(reLU(d)))
-    print(str(reLUPRIME(d)))
+    # print(str(reLU(d)))
+    # print(str(reLUPrime(d)))
