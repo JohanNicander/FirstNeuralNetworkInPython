@@ -105,15 +105,18 @@ class NeuralNet:
         j = 0
         for i in self.neuralShape:
             self.W.append(np.random.random_sample(np.array([i, j])))
-            self.b.append(np.random.random(i))
+            self.b.append(np.random.random_sample(np.array([i, 1])))
             j = i
         self.W.pop(0)
         self.b.pop(0)
 
     def propagate(self, x):
         # Input checks
-        if x.shape[0] != self.neuralShape[0]:
+        if type(x) is not np.ndarray or x.ndim > 2:
+            raise ValueError("x must be a numpyarray of dimension at most 2")
+        elif x.shape[0] != self.neuralShape[0]:
             raise ValueError("x.shape[0] must equal neuralShape[0]")
+
         if x.ndim == 1:
             x.shape = [len(x), 1]
         self.a[0] = x
