@@ -75,7 +75,8 @@ class NeuralNet:
     # self.actfun,      activation function
 
     def __init__(self, neuralShape=np.array([1, 1]), actfun=sigmoid):
-        self.setNeuralShape(neuralShape, actfun)
+        if neuralShape and actfun is not None:
+            self.setNeuralShape(neuralShape, actfun)
 
     def setNeuralShape(self, neuralShape=None, actfun=None):
         # Input checks  //TODO: Känns inte som att de bode få vara None
@@ -119,7 +120,7 @@ class NeuralNet:
             self.z[i + 1] = np.add(self.b[i], np.dot(self.W[i], self.a[i]))
             self.a[i + 1] = self.actfun(self.z[i + 1])
 
-    def gradientCalculation(self, x, y):
+    def grad(self, x, y):
         self.propagate(x)
 
         # //TODO: Flytta till init train
@@ -138,24 +139,34 @@ class NeuralNet:
                 self.actfun[-i - 1](self.z[-i - 1])
             # \\TODO: Kolla index
 
+        return dJdW, dJdb
+
+    def train(self, x, y):
+        if type(x) and type(y) is not np.ndarray:
+            raise ValueError("Arguments must be numpy arrays")
+        elif x.shape[1] != y.shape[1]:
+            raise ValueError("x and y must have same number of columns")
+
 
 def johan():
     # Read data
-    path = os.path.dirname(os.path.abspath(__file__))
-    indata = open(path + r'/Data.txt')
-    dataframe = pd.read_fwf(indata)
-    x_values = dataframe[['X']]
-    y_values = dataframe[['Y']]
-    print(x_values)
-
-    # Liear regression
-    reg = linear_model.LinearRegression()
-    reg.fit(x_values, y_values)
-
-    # Visulize results
-    plt.scatter(x_values, y_values)
-    plt.plot(x_values, reg.predict(x_values))
-    plt.show()
+    # path = os.path.dirname(os.path.abspath(__file__))
+    # indata = open(path + r'/Data.txt')
+    # dataframe = pd.read_fwf(indata)
+    # x_values = dataframe[['X']]
+    # y_values = dataframe[['Y']]
+    # print(x_values)
+    # # Liear regression
+    # reg = linear_model.LinearRegression()
+    # reg.fit(x_values, y_values)
+    # # Visulize results
+    # plt.scatter(x_values, y_values)
+    # plt.plot(x_values, reg.predict(x_values))
+    # plt.show()
+    x = 5
+    y = 7
+    if x and y is not None:
+        print(x + y)
 
 
 def joel():
@@ -193,6 +204,6 @@ def joel():
     print(str(np.add(c, b)))
     print(str(np.add(c, b).shape))
 
-    d = np.array([[1, -2, 0, -3], [-6, 9, 2, -5]])
+    # d = np.array([[1, -2, 0, -3], [-6, 9, 2, -5]])
     # print(str(reLU(d)))
     # print(str(reLUPrime(d)))
