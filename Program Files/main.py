@@ -17,9 +17,9 @@ def sigmoid(x):
     return np.divide(1, np.add(1, np.exp(-x)))
 
 
-def sigmoidPRIME(x):
+def sigmoidPrime(x):
     if type(x) is not np.ndarray:
-        raise TypeError("Wrong input type to sigmoidPRIME")
+        raise TypeError("Wrong input type to sigmoidPrime")
     return np.divide(np.exp(x), np.square(np.add(1, np.exp(x))))
 
 
@@ -29,23 +29,23 @@ def reLU(x):
     return np.maximum(0, x)
 
 
-def reLUPRIME(x):
+def reLUPrime(x):
     if type(x) is not np.ndarray:
-        raise TypeError("Wrong input type to reLUPRIME")
+        raise TypeError("Wrong input type to reLUPrime")
     return np.heaviside(x, 0.5)
 
 
 def softmax(x):
     if type(x) is not np.ndarray:
         raise TypeError("Wrong input type to softmax")
-    return np.exp(x) / np.sum(np.exp(x), axis=0)
+    return np.divide(np.exp(x), np.sum(np.exp(x), 0))
 # //TODO: Kontrolera att summering är över rätt axel
 # //TODO: kan kanske villja göra något med -max eller nått för inte inf
 
 
-def softmaxPRIME(x):
+def softmaxPrime(x):
     if type(x) is not np.ndarray:
-        raise TypeError("Wrong input type to softmaxPRIME")
+        raise TypeError("Wrong input type to softmaxPrime")
     return 0  # //TODO: Detta känns jättefel
 #   jag får: (e^x)'*sum(e_k^x)-(e^x)*(sum(e_k^x))'=0
 
@@ -56,9 +56,9 @@ def linear(x, a):
     return np.multiply(x, a)  # //TODO: Dimentioner och så...
 
 
-def linearPRIME(a):
+def linearPrime(a):
     if type(a) is not np.ndarray:
-        raise TypeError("Wrong input type to linearPRIME")
+        raise TypeError("Wrong input type to linearPrime")
     return a  # //TODO: ÖM... Ja..
 
 
@@ -72,11 +72,13 @@ class NeuralNet:
     # self.b,           list of vectors containing biases
     # self.actfun,      activation function
 
-    def __init__(self, neuralShape=np.array([1, 1]), actfun=sigmoid):
+    def __init__(self, neuralShape=np.array([1, 1]), actfun=[[sigmoid,
+                                                              sigmoidPrime],
+                                                             [sigmoid,
+                                                              sigmoidPrime]]):
         self.setNeuralShape(neuralShape, actfun)
 
     def setNeuralShape(self, neuralShape=None, actfun=None):
-        # Input checks  //TODO: Känns inte som att de bode få vara None
         if neuralShape is None:
             pass
         elif type(neuralShape) is np.ndarray and neuralShape.ndim == 1:
@@ -86,20 +88,19 @@ class NeuralNet:
 
         if actfun is None:
             pass
-        elif callable(actfun):
+        elif (len(actfun) and len(actfun[0]) and len(actfun[1]) == 2) and \
+                callable(actfun[0][0]) and callable(actfun[0][1]) and \
+                callable(actfun[1][0]) and callable(actfun[1][1]):
             self.actfun = actfun
         else:
-            raise ValueError("argument actfun must be a (callable) function")
+            raise ValueError("Argument actfun must have shape 2x2 and each \
+                              element must be a (callable) function")
 
-        # Initialize a, W, b
-        # self.a = []
-        # self.z = []
+        # Initialize W, b
         self.W = []
         self.b = []
         j = 0
         for i in self.neuralShape:
-            # self.a.append(np.zeros(i))
-            # self.z.append(np.zeros(i))
             self.W.append(np.random.random_sample(np.array([i, j])))
             self.b.append(np.random.random(i))
             j = i
@@ -117,7 +118,7 @@ class NeuralNet:
             self.z[i + 1] = np.add(self.b[i], np.dot(self.W[i], self.a[i]))
             self.a[i + 1] = self.actfun(self.z[i + 1])
 
-    def gradientCalculation(self, x, y):
+    def gradient(self, x, y):
         self.propagate(x)
 
         # //TODO: Flytta till init train
@@ -157,6 +158,7 @@ def johan():
 
 
 def joel():
+    # '''
     matr = np.array([[0, 1, 2, 3],
                      [0, 1, 2, 4]])
     try:
@@ -192,5 +194,26 @@ def joel():
     print(str(np.add(c, b).shape))
 
     d = np.array([[1, -2, 0, -3], [-6, 9, 2, -5]])
-    # print(str(reLU(d)))
-    # print(str(reLUPrime(d)))
+    print(str(reLU(d)))
+    print(str(reLUPrime(d)))
+
+    e = np.sum(np.array([[1, 2], [3, 4]]), 1)
+    e.shape = [e.shape[0], 1]
+    print(str(e))
+    print(str(e.shape))
+
+    f = [(1, 2), (3, 4)]
+    print(len(f))
+    print(str(f[0][1]))
+    # '''
+    actfun = [[sigmoid, sigmoidPrime], [sigmoid, sigmoidPrime]]
+    print(len(actfun))
+    print(len(actfun[0]))
+    print(len(actfun[1]))
+    print(str(actfun[0][1](np.array([1]))) + ' ' +
+          str(actfun[1][0](np.array([1]))))
+    if len(actfun) and len(actfun[0]) and len([1]) == 2:
+        print('seems NOT to work')
+
+
+joel()
