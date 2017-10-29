@@ -10,6 +10,8 @@ import io
 sys.stdout = io.TextIOWrapper(sys.stdout.detach(), encoding='utf-8')
 sys.stderr = io.TextIOWrapper(sys.stderr.detach(), encoding='utf-8')
 
+# \\TODO: ändra till tuplar
+
 
 def sigmoid(x):
     if type(x) is not np.ndarray:
@@ -45,21 +47,21 @@ def softmax(x):
 
 def softmaxPrime(x):
     if type(x) is not np.ndarray:
-        raise TypeError("Wrong input type to softmaxPrime")
-    return 0  # //TODO: Detta känns jättefel
-#   jag får: (e^x)'*sum(e_k^x)-(e^x)*(sum(e_k^x))'=0
+        raise TypeError("Wrong input type to softmaxPRIME")
+    return np.multiply(np.squre(softmax(x)), np.devide(np.sum(np.exp(x), 0),
+                                                       np.exp(x)) - 1)
 
 
-def linear(x, a):
+def linear(x, a=1):
     if type(x) is not np.ndarray or type(a) is not np.ndarray:
         raise TypeError("Wrong input type to linear")
-    return np.multiply(x, a)  # //TODO: Dimentioner och så...
+    return np.multiply(np.sum(x, 0), a)  # //TODO: Dimentioner och så...
 
 
-def linearPrime(a):
-    if type(a) is not np.ndarray:
-        raise TypeError("Wrong input type to linearPrime")
-    return a  # //TODO: ÖM... Ja..
+# def linearPRIME(a=1):
+#    if type(a) is not np.ndarray:
+#        raise TypeError("Wrong input type to linearPRIME")
+#    return a  # //TODO: ÖM... Ja..
 
 
 class NeuralNet:
@@ -76,7 +78,8 @@ class NeuralNet:
                                                               sigmoidPrime],
                                                              [sigmoid,
                                                               sigmoidPrime]]):
-        self.setNeuralShape(neuralShape, actfun)
+        if neuralShape and actfun is not None:
+            self.setNeuralShape(neuralShape, actfun)
 
     def setNeuralShape(self, neuralShape=None, actfun=None):
         if neuralShape is None:
@@ -137,24 +140,34 @@ class NeuralNet:
                 self.actfun[-i - 1](self.z[-i - 1])
             # \\TODO: Kolla index
 
+        return dJdW, dJdb
+
+    def train(self, x, y):
+        if type(x) and type(y) is not np.ndarray:
+            raise ValueError("Arguments must be numpy arrays")
+        elif x.shape[1] != y.shape[1]:
+            raise ValueError("x and y must have same number of columns")
+
 
 def johan():
     # Read data
-    path = os.path.dirname(os.path.abspath(__file__))
-    indata = open(path + r'/Data.txt')
-    dataframe = pd.read_fwf(indata)
-    x_values = dataframe[['X']]
-    y_values = dataframe[['Y']]
-    print(x_values)
-
-    # Liear regression
-    reg = linear_model.LinearRegression()
-    reg.fit(x_values, y_values)
-
-    # Visulize results
-    plt.scatter(x_values, y_values)
-    plt.plot(x_values, reg.predict(x_values))
-    plt.show()
+    # path = os.path.dirname(os.path.abspath(__file__))
+    # indata = open(path + r'/Data.txt')
+    # dataframe = pd.read_fwf(indata)
+    # x_values = dataframe[['X']]
+    # y_values = dataframe[['Y']]
+    # print(x_values)
+    # # Liear regression
+    # reg = linear_model.LinearRegression()
+    # reg.fit(x_values, y_values)
+    # # Visulize results
+    # plt.scatter(x_values, y_values)
+    # plt.plot(x_values, reg.predict(x_values))
+    # plt.show()
+    x = 5
+    y = 7
+    if x and y is not None:
+        print(x + y)
 
 
 def joel():
