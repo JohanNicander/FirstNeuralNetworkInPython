@@ -68,11 +68,16 @@ class NeuralNet:
     # Variables:
     # self.neuralShape  vector describing the network,
     #       first element = #input nodes, last element = #output nodes
-    # self.a,           list of vectors containing node-values after activation
-    # self.z,           list if vectors containing node-values befor activation
     # self.W,           list of matricies containing weights
     # self.b,           list of vectors containing biases
-    # self.actfun,      activation function
+    # self.actfun,      activation functions and derivatives
+    # self.actfun[0][0] hidden layer activation function
+    # self.actfun[0][1] hidden layer activation function derivative
+    # self.actfun[1][0] output layer activation function
+    # self.actfun[1][1] output layer activation function derivative
+    # Variables existing during propagation and training:
+    # self.a,           list of vectors containing node-values after activation
+    # self.z,           list if vectors containing node-values befor activation
 
     def __init__(self, neuralShape=np.array([1, 1]), actfun=[[sigmoid,
                                                               sigmoidPrime],
@@ -120,20 +125,18 @@ class NeuralNet:
         if x.ndim == 1:
             x.shape = [len(x), 1]
         self.a[0] = x
-        for i in range(0, len(self.b) - 2):
+        for i in range(0, self.neuralShape.shape[0] - 1):
             self.z[i + 1] = np.add(self.b[i], np.dot(self.W[i], self.a[i]))
             self.a[i + 1] = self.actfun(self.z[i + 1])
 
     def gradient(self, x, y):
         self.propagate(x)
-
-        # //TODO: Flytta till init train
-        d = []
-        dJdW = []
-        for i in range(0, len(self.neuralShape)):
-            d[i] = np.zeros(self.a[i].shape)
-            dJdW[i] = np.zeros(self.W[i - 1].shape)
-        dJdW.pop(0)
+        if type(y) is not np.ndarray or y.shape != self.a[-1].shape:
+            raise ValueError("y must be a numpy array of shape \
+                              [neuralShape[-1], x.shape[1]]")
+        M = self.a[0].shape[1]
+        d[-1] = np.multiply(np.subtract(self.a[-1], y),
+                            self.actfun[1][1](self.z[-1]))
 
         d[-1] = np.multiply(self.a[-1] - y,
                             self.actfun[-1](self.z[-1]))
@@ -150,6 +153,13 @@ class NeuralNet:
             raise ValueError("Arguments must be numpy arrays")
         elif x.shape[1] != y.shape[1]:
             raise ValueError("x and y must have same number of columns")
+
+        d = []
+        dJdW = []
+        for i in range(0, len(self.neuralShape)):
+            d[i] = np.zeros(self.a[i].shape)
+            dJdW[i] = np.zeros(self.W[i - 1].shape)
+        dJdW.pop(0)
 
 
 def johan():
