@@ -10,6 +10,8 @@ import io
 sys.stdout = io.TextIOWrapper(sys.stdout.detach(), encoding='utf-8')
 sys.stderr = io.TextIOWrapper(sys.stderr.detach(), encoding='utf-8')
 
+# \\TODO: ändra till tuplar
+
 
 def sigmoid(x):
     if type(x) is not np.ndarray:
@@ -46,20 +48,20 @@ def softmax(x):
 def softmaxPRIME(x):
     if type(x) is not np.ndarray:
         raise TypeError("Wrong input type to softmaxPRIME")
-    return 0  # //TODO: Detta känns jättefel
-#   jag får: (e^x)'*sum(e_k^x)-(e^x)*(sum(e_k^x))'=0
+    return np.multiply(np.squre(softmax(x)), np.devide(np.sum(np.exp(x), 0),
+                                                       np.exp(x)) - 1)
 
 
-def linear(x, a):
+def linear(x, a=1):
     if type(x) is not np.ndarray or type(a) is not np.ndarray:
         raise TypeError("Wrong input type to linear")
-    return np.multiply(x, a)  # //TODO: Dimentioner och så...
+    return np.multiply(np.sum(x, 0), a)  # //TODO: Dimentioner och så...
 
 
-def linearPRIME(a):
-    if type(a) is not np.ndarray:
-        raise TypeError("Wrong input type to linearPRIME")
-    return a  # //TODO: ÖM... Ja..
+# def linearPRIME(a=1):
+#    if type(a) is not np.ndarray:
+#        raise TypeError("Wrong input type to linearPRIME")
+#    return a  # //TODO: ÖM... Ja..
 
 
 class NeuralNet:
