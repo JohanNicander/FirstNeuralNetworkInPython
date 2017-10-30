@@ -1,4 +1,5 @@
 import numpy as np
+import neuralNet as nn
 import time         # används för tidsmätning
 # import abc    används för att göra abstract base class (typ interface)
 

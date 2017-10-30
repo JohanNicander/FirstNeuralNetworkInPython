@@ -3,6 +3,8 @@ import matplotlib.pyplot as plt
 from sklearn import linear_model
 import os
 import numpy as np
+import neuralNet as nn
+
 # Read data
 # path = os.path.dirname(os.path.abspath(__file__))
 # indata = open(path + r'/Data.txt')
