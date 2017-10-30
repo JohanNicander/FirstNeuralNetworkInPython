@@ -5,6 +5,7 @@ import numpy as np
 import os
 import sys
 import io
+import time         # används för tidsmätning
 # import abc    används för att göra abstract base class (typ interface)
 
 sys.stdout = io.TextIOWrapper(sys.stdout.detach(), encoding='utf-8')
@@ -63,6 +64,10 @@ def linear(x, a=1):
 #        raise TypeError("Wrong input type to linearPRIME")
 #    return a  # //TODO: ÖM... Ja..
 
+# TODO vi borde kanske göra en egen modul med aktiveringsfunktionerna ovan,
+#       för att denna fil inte ska bli för lång. Borde även flytta johan()
+#       och joel() till egna filer (där vi kan importera main.py) för att inte
+#       skräpa ner så mycket här
 
 class NeuralNet:
     # Variables:
@@ -79,6 +84,9 @@ class NeuralNet:
     # self.a,           list of vectors containing node-values after activation
     # self.z,           list if vectors containing node-values befor activation
 
+    # TODO det verkar som att np blir lite snabbare om man använder endim-
+    # arrayer (istället för tvådim kolonnvektorer)
+
     def __init__(self, neuralShape=np.array([1, 1]), actfun=[[sigmoid,
                                                               sigmoidPrime],
                                                              [sigmoid,
@@ -91,6 +99,7 @@ class NeuralNet:
             pass
         elif type(neuralShape) is np.ndarray and neuralShape.ndim == 1:
             self.neuralShape = neuralShape
+            self.N = neuralShape.shape[0]
         else:
             raise ValueError("Argument neuralShape must be a numpy array")
 
@@ -124,28 +133,29 @@ class NeuralNet:
 
         if x.ndim == 1:
             x.shape = [len(x), 1]
-        self.a[0] = x
-        for i in range(0, self.neuralShape.shape[0] - 1):
-            self.z[i + 1] = np.add(self.b[i], np.dot(self.W[i], self.a[i]))
-            self.a[i + 1] = self.actfun(self.z[i + 1])
+        self.z = [None]
+        self.a = [x]
+        for i in range(0, self.N - 1):
+            self.z.append = np.add(self.b[i], np.dot(self.W[i], self.a[i]))
+            self.a.append = self.actfun(self.z[i + 1])
 
     def gradient(self, x, y):
         self.propagate(x)
         if type(y) is not np.ndarray or y.shape != self.a[-1].shape:
             raise ValueError("y must be a numpy array of shape \
                               [neuralShape[-1], x.shape[1]]")
-        M = self.a[0].shape[1]
-        d[-1] = np.multiply(np.subtract(self.a[-1], y),
-                            self.actfun[1][1](self.z[-1]))
 
-        d[-1] = np.multiply(self.a[-1] - y,
-                            self.actfun[-1](self.z[-1]))
-        for i in range(1, len(self.neuralShape)):
-            dJdW[-i] = np.dot(self.a[-i - 1].T, d[-i])
-            d[-i] = np.dot(d[-i - 1], self.W[-i].T) * \
-                self.actfun[-i - 1](self.z[-i - 1])
-            # \\TODO: Kolla index
-
+        # M = self.a[0].shape[1]
+        O = np.ones([self.a[0].shape[1], 1])    # O = np.ones([M, 1])
+        d = [np.multiply(np.subtract(self.a[-1], y),
+                         self.actfun[1][1](self.z[-1]))]
+        dJdW = [np.dot(d[0], self.a[-2].T)]
+        dJdb = [np.dot(d[0], O)]
+        for i in range(2, self.N):
+            d.insert(0, np.multiply(np.dot(self.W[-i + 1].T, d[-i + 1]),
+                                    self.actfun[0][1](self.z[-i])))
+            dJdW.insert(0, np.dot(d[0], self.a[-i - 1].T))
+            dJdb.insert(0, np.dot(d[0], O))
         return dJdW, dJdb
 
     def train(self, x, y):
@@ -184,62 +194,116 @@ def johan():
 
 
 def joel():
-    # '''
-    matr = np.array([[0, 1, 2, 3],
-                     [0, 1, 2, 4]])
-    try:
-        temp = np.add(1, matr)
-    except Exception as e:
-        print("Doesn't work")
-    else:
-        print(str(temp))
-    plt.plot(matr[0, :], matr[1, :])
-    # plt.show()
-    neuralnettest = NeuralNet(np.array([2, 4, 3]))
-    try:
-        # print(str(neuralnettest.a))
-        print(str(neuralnettest.W))
-        print(str(neuralnettest.b))
-        # print(str(neuralnettest.actfun(np.array([1, 2, 3]))))
-        # print(str(np.add(np.dot(neuralnettest.W[0], neuralnettest.a[0]),
-        #                 neuralnettest.b[0])))
-        print(str(neuralnettest.W[1][2, 1]))
-    except NameError:
-        var_exists = False
-    else:
-        var_exists = True
-    print(var_exists)
-
-    a = np.array([[1, 2], [2, 3], [3, 4]])
-    print(a.shape)
-
-    b = np.ones([4, 3])
-    c = np.array([1, 2, 3, 4])
-    c.shape = [4, 1]
-    print(str(np.add(c, b)))
-    print(str(np.add(c, b).shape))
-
-    d = np.array([[1, -2, 0, -3], [-6, 9, 2, -5]])
-    print(str(reLU(d)))
-    print(str(reLUPrime(d)))
-
-    e = np.sum(np.array([[1, 2], [3, 4]]), 1)
-    e.shape = [e.shape[0], 1]
-    print(str(e))
-    print(str(e.shape))
-
-    f = [(1, 2), (3, 4)]
-    print(len(f))
-    print(str(f[0][1]))
-    # '''
-    actfun = [[sigmoid, sigmoidPrime], [sigmoid, sigmoidPrime]]
-    print(len(actfun))
-    print(len(actfun[0]))
-    print(len(actfun[1]))
-    print(str(actfun[0][1](np.array([1]))) + ' ' +
-          str(actfun[1][0](np.array([1]))))
-    if len(actfun) and len(actfun[0]) and len([1]) == 2:
-        print('seems NOT to work')
+    #
+    # matr = np.array([[0, 1, 2, 3],
+    #                  [0, 1, 2, 4]])
+    # try:
+    #     temp = np.add(1, matr)
+    # except Exception as e:
+    #     print("Doesn't work")
+    # else:
+    #     print(str(temp))
+    # plt.plot(matr[0, :], matr[1, :])
+    # # plt.show()
+    # neuralnettest = NeuralNet(np.array([2, 4, 3]))
+    # try:
+    #     # print(str(neuralnettest.a))
+    #     print(str(neuralnettest.W))
+    #     print(str(neuralnettest.b))
+    #     # print(str(neuralnettest.actfun(np.array([1, 2, 3]))))
+    #     # print(str(np.add(np.dot(neuralnettest.W[0], neuralnettest.a[0]),
+    #     #                 neuralnettest.b[0])))
+    #     print(str(neuralnettest.W[1][2, 1]))
+    # except NameError:
+    #     var_exists = False
+    # else:
+    #     var_exists = True
+    # print(var_exists)
+    #
+    # a = np.array([[1, 2], [2, 3], [3, 4]])
+    # print(a.shape)
+    #
+    # b = np.ones([4, 3])
+    # c = np.array([1, 2, 3, 4])
+    # c.shape = [4, 1]
+    # print(str(np.add(c, b)))
+    # print(str(np.add(c, b).shape))
+    #
+    # d = np.array([[1, -2, 0, -3], [-6, 9, 2, -5]])
+    # print(str(reLU(d)))
+    # print(str(reLUPrime(d)))
+    #
+    # e = np.sum(np.array([[1, 2], [3, 4]]), 1)
+    # e.shape = [e.shape[0], 1]
+    # print(str(e))
+    # print(str(e.shape))
+    #
+    # f = [(1, 2), (3, 4)]
+    # print(len(f))
+    # print(str(f[0][1]))
+    #
+    # actfun = [[sigmoid, sigmoidPrime], [sigmoid, sigmoidPrime]]
+    # print(len(actfun))
+    # print(len(actfun[0]))
+    # print(len(actfun[1]))
+    # print(str(actfun[0][1](np.array([1]))) + ' ' +
+    #       str(actfun[1][0](np.array([1]))))
+    # if len(actfun) and len(actfun[0]) and len([1]) == 2:
+    #     print('seems NOT to work')
+    #
+    # g = []
+    # for i in range(1, 5):
+    #     g.insert(0, i)
+    # print(g)
+    #
+    # A = np.array([[1, 2, 3], [4, 5, 6], [7, 8, 9]])
+    # x = np.array([9, 5, 3])
+    # b1 = np.dot(A, x)
+    # b2 = np.dot(x, A)
+    # b3 = np.dot(A, np.reshape(x, [3, 1]))
+    # print(b1)
+    # print(b2)
+    # print(b3)
+    # x2 = np.reshape(x, [3, 1])
+    # start = time.time()
+    # for i in range(1000000):
+    #     np.dot(A, x2)
+    # end = time.time()
+    # print('Andra tog ' + str(end - start) + ' s att beräkna')
+    # start = time.time()
+    # for i in range(1000000):
+    #     np.dot(A, x)
+    # end = time.time()
+    # print('Första tog ' + str(end - start) + ' s att beräkna')
+    #
+    # for j in range(100):
+    #     A1 = np.random.random_sample([40, 50])
+    #     x1 = np.random.random_sample([50, 1000])
+    #     A2 = A1.T
+    #     x2 = x1.T
+    #     l1 = []
+    #     l2 = []
+    #
+    #     start1 = time.time()
+    #     for i in range(10000):
+    #         np.dot(A1, x1)
+    #     end1 = time.time()
+    #     l1.append(end1 - start1)
+    #
+    #     start2 = time.time()
+    #     for i in range(10000):
+    #         np.dot(x2, A2)
+    #     end2 = time.time()
+    #     l2.append(end2 - start2)
+    #     print(sum(l1) / len(l1))
+    #     print(sum(l2) / len(l2))
+    #     print(j)
+    #     sys.stdout.flush()
+    a = [np.array([1, 2])]
+    for i in range(0, 9):
+        a.append(np.array([i]))
+    print(a)
+    pass
 
 
 joel()
