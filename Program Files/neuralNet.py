@@ -6,6 +6,9 @@ import actfuns as af
 sys.stdout = io.TextIOWrapper(sys.stdout.detach(), encoding='utf-8')
 sys.stderr = io.TextIOWrapper(sys.stderr.detach(), encoding='utf-8')
 
+# TODO, update cost function with a lambda*complexity term
+#       and derive new gradient. Optimize for lambda? Golden ratio search?
+
 
 class NeuralNet:
     # Variables:
@@ -73,7 +76,20 @@ class NeuralNet:
             self.z.append = np.add(self.b[i], np.dot(self.W[i], self.a[i]))
             self.a.append = self.actfun(self.z[i + 1])
 
-    def gradient(self, x, y):
+    def error(self, x, y):
+        self.propagate(x)
+        if type(y) is not np.ndarray or y.shape != self.a[-1].shape:
+            raise ValueError("y must be a numpy array of shape \
+                              [neuralShape[-1], x.shape[1]]")
+        return np.multiply(np.divide(1, 2),
+                           np.sum(np.power(np.subtract(self.a[-1], y), 2)))
+
+    def cost(self, x, y, k):
+        error = self.error(x, y)
+        complexity = []  # TODO
+        return error + k * complexity
+
+    def gradCost(self, x, y):       # TODO, add complexity term
         self.propagate(x)
         if type(y) is not np.ndarray or y.shape != self.a[-1].shape:
             raise ValueError("y must be a numpy array of shape \
