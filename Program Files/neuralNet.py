@@ -8,6 +8,8 @@ sys.stderr = io.TextIOWrapper(sys.stderr.detach(), encoding='utf-8')
 
 # TODO, update cost function with a lambda*complexity term
 #       and derive new gradient. Optimize for lambda? Golden ratio search?
+# TODO, stochastic gradient descent use a subset of training data for each step
+# Should cost and error be avarages of cost/error per training example?
 
 
 class NeuralNet:
