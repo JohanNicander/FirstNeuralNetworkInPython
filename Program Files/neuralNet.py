@@ -11,6 +11,24 @@ sys.stderr = io.TextIOWrapper(sys.stderr.detach(), encoding='utf-8')
 # TODO, stochastic gradient descent use a subset of training data for each step
 # Should cost and error be avarages of cost/error per training example?
 
+# TODO, improve initialization:
+# the recommended heuristic is to initialize each neuron’s weight vector as:
+# w = np.random.randn(n) / sqrt(n), where n is the number of its inputs.
+# This ensures that all neurons in the network initially have approximately the
+# same output distribution and empirically improves the rate of convergence.
+# In practice, the current recommendation is to use ReLU units and use the
+# w = np.random.randn(n) * sqrt(2.0/n)
+# Initializing the biases:
+# It is possible and common to initialize the biases
+# to be zero, since the asymmetry breaking is provided by the small random
+# numbers in the weights. For ReLU non-linearities, some people like to use
+# small constant value such as 0.01 for all biases because this ensures that
+# all ReLU units fire in the beginning and therefore obtain and propagate some
+# gradient. However, it is not clear if this provides a consistent improvement
+# (in fact some results seem to indicate that this performs worse) and it is
+# more common to simply use 0 bias initialization.
+# For more info, see: http://cs231n.github.io/neural-networks-2/
+
 
 class NeuralNet:
     # Variables:
