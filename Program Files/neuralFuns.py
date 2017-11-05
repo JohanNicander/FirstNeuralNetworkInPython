@@ -2,6 +2,8 @@ import numpy as np
 
 # \\TODO: ändra ev till tuplar med (funktion, derivata)
 
+# Actfuns
+
 
 def sigmoid(x):
     if type(x) is not np.ndarray:
@@ -52,3 +54,29 @@ def linear(x, a=1):
 #    if type(a) is not np.ndarray:
 #        raise TypeError("Wrong input type to linearPRIME")
 #    return a  # //TODO: ÖM... Ja..
+
+# Compfuns
+
+
+def L1(x):
+    if type(x) is not np.ndarray:
+        raise TypeError("Wrong input type to L1")
+    return np.sum(np.absolute(x))
+
+
+def L1Prime(x):
+    if type(x) is not np.ndarray:
+        raise TypeError("Wrong input type to L1Prime")
+    return np.sign(x)
+
+
+def L2(x):
+    if type(x) is not np.ndarray:
+        raise TypeError("Wrong input type to L1")
+    return np.multiply(np.divide(1, 2), np.sum(np.power(x, 2)))
+
+
+def L2Prime(x):
+    if type(x) is not np.ndarray:
+        raise TypeError("Wrong input type to L1")
+    return x

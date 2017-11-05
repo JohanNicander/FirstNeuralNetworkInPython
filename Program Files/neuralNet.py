@@ -1,7 +1,7 @@
 import numpy as np
 import sys
 import io
-import actfuns as af
+import neuralFuns as nf
 
 sys.stdout = io.TextIOWrapper(sys.stdout.detach(), encoding='utf-8')
 sys.stderr = io.TextIOWrapper(sys.stderr.detach(), encoding='utf-8')
@@ -10,6 +10,7 @@ sys.stderr = io.TextIOWrapper(sys.stderr.detach(), encoding='utf-8')
 #       and derive new gradient. Optimize for lambda? Golden ratio search?
 # TODO, stochastic gradient descent use a subset of training data for each step
 # Should cost and error be avarages of cost/error per training example?
+# TODO, setters for actfun and compfun (complexity function)
 
 # TODO, improve initialization:
 # the recommended heuristic is to initialize each neuron’s weight vector as:
@@ -31,23 +32,32 @@ sys.stderr = io.TextIOWrapper(sys.stderr.detach(), encoding='utf-8')
 
 
 class NeuralNet:
-    # Variables:
-    # self.neuralShape  vector describing the network,
-    #       first element = #input nodes, last element = #output nodes
+    # Network parameters:
     # self.W,           list of matricies containing weights
     # self.b,           list of vectors containing biases
-    # self.actfun,      activation functions and derivatives
-    # self.actfun[0][0] hidden layer activation function
-    # self.actfun[0][1] hidden layer activation function derivative
-    # self.actfun[1][0] output layer activation function
-    # self.actfun[1][1] output layer activation function derivative
-    # Variables existing during propagation and training:
+    #
+    # Propagation parameters:
     # self.a,           list of vectors containing node-values after activation
     # self.z,           list if vectors containing node-values befor activation
+    #
+    # Hyper parameters:
+    # self.neuralShape  vector describing the network,
+    #       first element = #input nodes, last element = #output nodes
+    # self.k            complexity factor, C = J + k*compfun
+    #
+    # Network functions and hyper functions:
+    # self.actfun,      activation functions and derivatives
+    #   self.actfun[0][0]       hidden layer activation function
+    #   self.actfun[0][1]       hidden layer activation function derivative
+    #   self.actfun[1][0]       output layer activation function
+    #   self.actfun[1][1]       output layer activation function derivative
+    # self.compfun,     complexity function and derivative
+    #   self.compfun[0]     complexity function
+    #   self.compfun[1]     complexity function derivative
 
     def __init__(self, neuralShape=np.array([1, 1]),
-                 actfun=[[af.sigmoid, af.sigmoidPrime],
-                         [af.sigmoid, af.sigmoidPrime]]):
+                 actfun=[[nf.sigmoid, nf.sigmoidPrime],
+                         [nf.sigmoid, nf.sigmoidPrime]]):
         if neuralShape and actfun is not None:
             self.setNeuralShape(neuralShape, actfun)
 
@@ -95,6 +105,7 @@ class NeuralNet:
         for i in range(0, self.N - 1):
             self.z.append = np.add(self.b[i], np.dot(self.W[i], self.a[i]))
             self.a.append = self.actfun(self.z[i + 1])
+        return self.a[-1]
 
     def error(self, x, y):
         self.propagate(x)

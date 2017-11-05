@@ -1,8 +1,11 @@
 import numpy as np
 import neuralNet as nn
+import neuralFuns as nf
 import time         # används för tidsmätning
 # import abc    används för att göra abstract base class (typ interface)
 
+time.time()
+# nn.NeuralNet()
 
 # matr = np.array([[0, 1, 2, 3],
 #                  [0, 1, 2, 4]])
@@ -108,7 +111,7 @@ import time         # används för tidsmätning
 #     print(sum(l2) / len(l2))
 #     print(j)
 #     sys.stdout.flush()
-a = [np.array([1, 2])]
-for i in range(0, 9):
-    a.append(np.array([i]))
+a = np.random.random_sample(np.array([3, 2])) - 1 / 2
 print(a)
+print(np.absolute(a))
+print(nf.L1(a))
