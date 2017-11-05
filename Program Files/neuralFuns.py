@@ -56,7 +56,7 @@ def linear(x, a=1):
 #    return a  # //TODO: ÖM... Ja..
 
 # Compfuns
-
+# TODO, should also work for list of ndarrays
 
 def L1(x):
     if type(x) is not np.ndarray:

@@ -55,6 +55,11 @@ class NeuralNet:
     #   self.compfun[0]     complexity function
     #   self.compfun[1]     complexity function derivative
 
+    # TODO, add compfuns and complexity factor to initialize
+    # TODO, should there be two complexity factors:
+    #           k1 \in [0, inf), used directly in cost
+    #           k2 \in (0, 1],  might be better to for golden ratio search (?)
+
     def __init__(self, neuralShape=np.array([1, 1]),
                  actfun=[[nf.sigmoid, nf.sigmoidPrime],
                          [nf.sigmoid, nf.sigmoidPrime]]):
@@ -117,7 +122,7 @@ class NeuralNet:
 
     def cost(self, x, y, k):
         error = self.error(x, y)
-        complexity = []  # TODO
+        complexity = []             # TODO
         return error + k * complexity
 
     def gradCost(self, x, y):       # TODO, add complexity term
@@ -139,7 +144,7 @@ class NeuralNet:
             dJdb.insert(0, np.dot(d[0], O))
         return dJdW, dJdb
 
-    def train(self, x, y):
+    def optimCost(self, x, y):
         if type(x) and type(y) is not np.ndarray:
             raise ValueError("Arguments must be numpy arrays")
         elif x.shape[1] != y.shape[1]:

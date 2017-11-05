@@ -111,7 +111,16 @@ time.time()
 #     print(sum(l2) / len(l2))
 #     print(j)
 #     sys.stdout.flush()
-a = np.random.random_sample(np.array([3, 2])) - 1 / 2
+# a = np.random.random_sample(np.array([3, 2])) - 1 / 2
+# print(a)
+# print(np.absolute(a))
+# print(nf.L1(a))
+
+a = [np.random.random_sample(np.array([2, 2]))]
+a.append(np.random.random_sample(np.array([2, 2])))
 print(a)
-print(np.absolute(a))
-print(nf.L1(a))
+j = 0
+for i in [a]:
+    j += 1
+    print(j)
+    print(i)
