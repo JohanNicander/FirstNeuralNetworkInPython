@@ -10,7 +10,8 @@ sys.stderr = io.TextIOWrapper(sys.stderr.detach(), encoding='utf-8')
 #       and derive new gradient. Optimize for lambda? Golden ratio search?
 # TODO, stochastic gradient descent use a subset of training data for each step
 # Should cost and error be avarages of cost/error per training example?
-# TODO, setters for actfun and compfun (complexity function)
+# TODO, setters for actfun and compfun (complexity function) as well as
+#           W and b (consistency checks required)
 
 # TODO, improve initialization:
 # the recommended heuristic is to initialize each neuron’s weight vector as:
@@ -56,7 +57,7 @@ class NeuralNet:
     #   self.compfun[1]     complexity function derivative
 
     # TODO, add compfuns and complexity factor to initialize
-    # TODO, should there be two complexity factors:
+    # TODO, should there be two complexity factors?
     #           k1 \in [0, inf), used directly in cost
     #           k2 \in (0, 1],  might be better to for golden ratio search (?)
 
@@ -118,12 +119,12 @@ class NeuralNet:
             raise ValueError("y must be a numpy array of shape \
                               [neuralShape[-1], x.shape[1]]")
         return np.multiply(np.divide(1, 2),
-                           np.sum(np.power(np.subtract(self.a[-1], y), 2)))
+                           np.sum(np.square(np.subtract(self.a[-1], y))))
 
     def cost(self, x, y, k):
         error = self.error(x, y)
         complexity = []             # TODO
-        return error + k * complexity
+        return error + self.k * complexity
 
     def gradCost(self, x, y):       # TODO, add complexity term
         self.propagate(x)

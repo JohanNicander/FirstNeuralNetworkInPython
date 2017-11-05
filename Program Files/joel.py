@@ -116,11 +116,50 @@ time.time()
 # print(np.absolute(a))
 # print(nf.L1(a))
 
-a = [np.random.random_sample(np.array([2, 2]))]
-a.append(np.random.random_sample(np.array([2, 2])))
-print(a)
-j = 0
-for i in [a]:
-    j += 1
-    print(j)
-    print(i)
+# a = [np.random.random_sample(np.array([2, 2]))]
+# a.append(np.random.random_sample(np.array([2, 2])))
+# print(a)
+# j = 0
+# for i in [a]:
+#     j += 1
+#     print(j)
+#     print(i)
+#
+# time1 = 0
+# time2 = 0
+# for i in range(1000):
+#     A = 200 * (np.random.random_sample(np.array([100, 100])) - 1 / 2)
+#
+#     time2start = time.time()
+#     np.power(A, 2)
+#     time2end = time.time()
+#     time2 += time2end - time2start
+#
+#     time1start = time.time()
+#     np.square(A)
+#     time1end = time.time()
+#     time1 += time1end - time1start
+# print(time1)
+# print(time2)
+
+# ANVÄND SQUARE ISTÄLLET FÖR POWER!!! (se ovan)
+
+time1 = 0
+time2 = 0
+for i in range(5000):
+    A = 200 * (np.random.random_sample(np.array([100, 100])) - 1 / 2)
+
+    time1start = time.time()
+    nf.sigmoid2(A, True, True)
+    time1end = time.time()
+    time1 += time1end - time1start
+
+    time2start = time.time()
+    nf.sigmoid3(A, True, True)
+    time2end = time.time()
+    time2 += time2end - time2start
+
+print(time1)
+print(time2)
+
+# sigmoid3 snabbare än sigmoid2 ENDAST när både fun och funD = True

@@ -17,6 +17,29 @@ def sigmoidPrime(x):
     return np.divide(np.exp(x), np.square(np.add(1, np.exp(x))))
 
 
+def sigmoid2(x, fun=True, funD=False):
+    if type(x) is not np.ndarray:
+        raise TypeError("Wrong input type to sigmoid2")
+    ret = ()
+    if fun:
+        ret += (np.divide(1, np.add(1, np.exp(-x))), )
+    if funD:
+        ret += (np.divide(np.exp(x), np.square(np.add(1, np.exp(x)))), )
+    return ret
+
+
+def sigmoid3(x, fun=True, funD=False):
+    if type(x) is not np.ndarray:
+        raise TypeError("Wrong input type to sigmoid2")
+    ret = ()
+    funeval = np.divide(1, np.add(1, np.exp(-x)))
+    if fun:
+        ret += (funeval, )
+    if funD:
+        ret += (np.multiply(np.exp(x), np.square(funeval)), )
+    return ret
+
+
 def reLU(x):
     if type(x) is not np.ndarray:
         raise TypeError("Wrong input type to reLU")
@@ -56,7 +79,7 @@ def linear(x, a=1):
 #    return a  # //TODO: ÖM... Ja..
 
 # Compfuns
-# TODO, should also work for list of ndarrays
+# TODO, should perhaps also work for list of ndarrays
 
 def L1(x):
     if type(x) is not np.ndarray:
@@ -73,7 +96,7 @@ def L1Prime(x):
 def L2(x):
     if type(x) is not np.ndarray:
         raise TypeError("Wrong input type to L1")
-    return np.multiply(np.divide(1, 2), np.sum(np.power(x, 2)))
+    return np.multiply(np.divide(1, 2), np.sum(np.square(x)))
 
 
 def L2Prime(x):
