@@ -99,19 +99,28 @@ class NeuralNet:
         self.W.pop(0)
         self.b.pop(0)
 
-    def setWeight(self, W):
-        if type(W) is not list or len(W) != len(self.neuralShape) - 1:
+    def setWeight(self, W=None):
+        if W is None:
+            self.W = []
+            j = 0
+            for i in self.neuralShape:
+                self.W.append(np.random.random_sample(np.array([i, j])))
+                j = i
+            self.W.pop(0)
+        elif type(W) is not list or len(W) != len(self.neuralShape) - 1:
             raise ValueError("W is not a list containing N-1 elements")
-        for i in range(len(W)):
-            if type(W[i]) is not np.ndarray:
-                raise TypeError("W contains non ndarrays")
-            elif W[i].shape != \
-                    np.array([self.neuralShape[i + 1], self.neuralShape[i]]):
-                raise ValueError("W[" + str(i) + "] is not of consistent \
+        elif True:
+            for i in range(len(W)):
+                if type(W[i]) is not np.ndarray:
+                    raise TypeError("W contains non ndarrays")
+                elif W[i].shape != np.array([self.neuralShape[i + 1],
+                                             self.neuralShape[i]]):
+                    raise ValueError("W[" + str(i) + "] is not of consistent \
                                     size with neuralShape")
-        self.W = W
+        else:
+            self.W = W
 
-    def setBias(self, b):
+    def setBias(self, b=None):
         if type(b) is not list or len(b) != len(self.neuralShape) - 1:
             raise ValueError("b is not a list containing N-1 elements")
         for i in range(len(b)):
