@@ -68,25 +68,25 @@ class NeuralNet:
             self.setNeuralShape(neuralShape, actfun)
 
     # Setters
-
-    def setNeuralShape(self, neuralShape=None, actfun=None):
-        if neuralShape is None:
-            pass
-        elif type(neuralShape) is np.ndarray and neuralShape.ndim == 1:
-            self.neuralShape = neuralShape
-            self.N = neuralShape.shape[0]
-        else:
-            raise ValueError("Argument neuralShape must be a numpy array")
-
+    def setActFun(self, actfun=None):
         if actfun is None:
             pass
-        elif (len(actfun) and len(actfun[0]) and len(actfun[1]) == 2) and \
-                callable(actfun[0][0]) and callable(actfun[0][1]) and \
-                callable(actfun[1][0]) and callable(actfun[1][1]):
-            self.actfun = actfun
+        elif any(len(l) != 2 for l in actfun) or len(actfun) != 2:
+            raise ValueError("Argument actfun must have shape 2x2")
+        elif any(not callable(f) for f in [item for sublist in
+                                           actfun for item in sublist]):
+            raise ValueError("Each element must be a (callable) function")
         else:
-            raise ValueError("Argument actfun must have shape 2x2 and each \
-                              element must be a (callable) function")
+            self.actfun = actfun
+
+    def setNeuralShape(self, neuralShape=None):
+        if neuralShape is None:
+            pass
+        elif type(neuralShape) is not np.ndarray or neuralShape.ndim != 1:
+            raise ValueError("Argument neuralShape must be a numpy array")
+        else:
+            self.neuralShape = neuralShape
+            self.N = neuralShape.shape[0]
 
         # Initialize W, b
         self.W = []
