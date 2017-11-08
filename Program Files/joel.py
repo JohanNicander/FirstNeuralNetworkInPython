@@ -161,5 +161,4 @@ for i in range(5000):
 
 print(time1)
 print(time2)
-
 # sigmoid3 snabbare än sigmoid2 ENDAST när både fun och funD = True

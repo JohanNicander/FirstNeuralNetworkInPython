@@ -67,6 +67,8 @@ class NeuralNet:
         if neuralShape and actfun is not None:
             self.setNeuralShape(neuralShape, actfun)
 
+    # Setters
+
     def setNeuralShape(self, neuralShape=None, actfun=None):
         if neuralShape is None:
             pass
@@ -96,6 +98,33 @@ class NeuralNet:
             j = i
         self.W.pop(0)
         self.b.pop(0)
+
+    def setWeight(self, W):
+        if type(W) is not list or len(W) != len(self.neuralShape) - 1:
+            raise ValueError("W is not a list containing N-1 elements")
+        for i in range(len(W)):
+            if type(W[i]) is not np.ndarray:
+                raise TypeError("W contains non ndarrays")
+            elif W[i].shape != \
+                    np.array([self.neuralShape[i + 1], self.neuralShape[i]]):
+                raise ValueError("W[" + str(i) + "] is not of consistent \
+                                    size with neuralShape")
+        self.W = W
+
+    def setBias(self, b):
+        if type(b) is not list or len(b) != len(self.neuralShape) - 1:
+            raise ValueError("b is not a list containing N-1 elements")
+        for i in range(len(b)):
+            if type(b[i]) is not np.ndarray:
+                raise TypeError("b contains non ndarrays")
+            elif b[i].ndim == 1:
+                b[i].reshape(np.ndarray([len(b), 1]))
+            elif b[i].shape != np.array([1, self.neuralShape[i + 1]]):
+                b[i] = b[i].T
+            elif b[i].shape != np.array([self.neuralShape[i + 1], 1]):
+                raise ValueError("W[" + str(i) + "] is not of consistent \
+                                    size with neuralShape")
+        self.b = b
 
     def propagate(self, x):
         # Input checks
