@@ -103,7 +103,7 @@ class NeuralNet:
         if W is None:
             self.W = []
             j = 0
-            for i in self.neuralShape:
+            for i in np.nditer(self.neuralShape):
                 self.W.append(np.random.random_sample(np.array([i, j])))
                 j = i
             self.W.pop(0)
@@ -120,7 +120,11 @@ class NeuralNet:
             self.W = W
 
     def setBias(self, b=None):
-        if type(b) is not list or len(b) != len(self.neuralShape) - 1:
+        if b is None:
+            self.b = []
+            for i in np.nditer(self.neuralShape[1:]):
+                self.b.append(np.random.random_sample(np.array([i, 1])))
+        elif type(b) is not list or len(b) != len(self.neuralShape) - 1:
             raise ValueError("b is not a list containing N-1 elements")
         for i in range(len(b)):
             if type(b[i]) is not np.ndarray:
