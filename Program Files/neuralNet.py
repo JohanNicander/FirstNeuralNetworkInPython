@@ -109,7 +109,7 @@ class NeuralNet:
             self.W.pop(0)
         elif type(W) is not list or len(W) != len(self.neuralShape) - 1:
             raise ValueError("W is not a list containing N-1 elements")
-        elif True:
+        else:
             for i in range(len(W)):
                 if type(W[i]) is not np.ndarray:
                     raise TypeError("W contains non ndarrays")
@@ -117,7 +117,6 @@ class NeuralNet:
                                              self.neuralShape[i]]):
                     raise ValueError("W[" + str(i) + "] is not of consistent \
                                     size with neuralShape")
-        else:
             self.W = W
 
     def setBias(self, b=None):
