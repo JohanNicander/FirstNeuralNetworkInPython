@@ -125,7 +125,7 @@ class NeuralNet:
                 self.b.append(np.random.random_sample(np.array([i, 1])))
         elif type(b) is not list or len(b) != len(self.neuralShape) - 1:
             raise ValueError("b is not a list containing N-1 elements")
-        for i in range(len(b)):
+        for i in range(len(b)):     # //TODO: Fixa så det blir som i setWeights
             if type(b[i]) is not np.ndarray:
                 raise TypeError("b contains non ndarrays")
             elif b[i].ndim == 1:
