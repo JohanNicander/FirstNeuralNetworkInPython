@@ -164,7 +164,5 @@ time.time()
 #
 # sigmoid3 snabbare än sigmoid2 ENDAST när både fun och funD = True
 
-temp = np.array([0, 1, 2, 3])
-print(temp)
-for i in np.nditer(temp[1:]):
-    print(i)
+temp = 1 + np.array([1])
+print(type(temp))

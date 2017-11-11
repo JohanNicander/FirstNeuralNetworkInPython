@@ -10,8 +10,6 @@ sys.stderr = io.TextIOWrapper(sys.stderr.detach(), encoding='utf-8')
 #       and derive new gradient. Optimize for lambda? Golden ratio search?
 # TODO, stochastic gradient descent use a subset of training data for each step
 # Should cost and error be avarages of cost/error per training example?
-# TODO, setters for actfun and compfun (complexity function) as well as
-#           W and b (consistency checks required)
 
 # TODO, improve initialization:
 # the recommended heuristic is to initialize each neuron’s weight vector as:
@@ -56,48 +54,36 @@ class NeuralNet:
     #   self.compfun[0]     complexity function
     #   self.compfun[1]     complexity function derivative
 
-    # TODO, add compfuns and complexity factor to initialize
     # TODO, should there be two complexity factors?
     #           k1 \in [0, inf), used directly in cost
     #           k2 \in (0, 1],  might be better to for golden ratio search (?)
 
-    def __init__(self, neuralShape=np.array([1, 1]),
-                 actfun=[[nf.sigmoid, nf.sigmoidPrime],
-                         [nf.sigmoid, nf.sigmoidPrime]]):
-        if neuralShape and actfun is not None:
-            self.setNeuralShape(neuralShape, actfun)
+    def __init__(self, neuralShape, actfun=None, compfun=None, compfact=0):
+        self.setNeuralShape(neuralShape, actfun)
+
+        if actfun is None:
+            actfun = [nf.reLU, nf.reLUPrime]
+            if self.neuralShape[-1] == 1:
+                actfun.append(nf.linear)
+                actfun.append(lambda x: np.ones(x.shape()))
+            else:
+                actfun.append(nf.softmax)
+                actfun.append(nf.softmaxPrime)
+        self.setActFun(actfun)
+
+        if compfun is None:
+            def tempfun(x): return np.zeros(x.shape())
+            compfun = [tempfun, tempfun]
+        self.setCompFun(compfun)
+        self.setCompFact(compfact)
 
     # Setters
-    def setActFun(self, actfun=None):
-        if actfun is None:
-            pass
-        elif any(len(l) != 2 for l in actfun) or len(actfun) != 2:
-            raise ValueError("Argument actfun must have shape 2x2")
-        elif any(not callable(f) for f in [item for sublist in
-                                           actfun for item in sublist]):
-            raise ValueError("Each element must be a (callable) function")
-        else:
-            self.actfun = actfun
-
     def setNeuralShape(self, neuralShape=None):
-        if neuralShape is None:
-            pass
-        elif type(neuralShape) is not np.ndarray or neuralShape.ndim != 1:
+        if type(neuralShape) is not np.ndarray or neuralShape.ndim != 1:
             raise ValueError("Argument neuralShape must be a numpy array")
         else:
             self.neuralShape = neuralShape
             self.N = neuralShape.shape[0]
-
-        # Initialize W, b
-        self.W = []
-        self.b = []
-        j = 0
-        for i in self.neuralShape:
-            self.W.append(np.random.random_sample(np.array([i, j])))
-            self.b.append(np.random.random_sample(np.array([i, 1])))
-            j = i
-        self.W.pop(0)
-        self.b.pop(0)
 
     def setWeight(self, W=None):
         if W is None:
@@ -137,6 +123,35 @@ class NeuralNet:
                                     size with neuralShape")
         self.b = b
 
+    def setActFun(self, actfun):
+        if type(actfun) is not list or tuple:
+            raise TypeError("Argument actfun must be a list or a tuple")
+        elif any(len(l) != 2 for l in actfun) or len(actfun) != 2:
+            raise ValueError("Argument actfun must have shape 2x2")
+        elif any(not callable(f) for f in [item for sublist in
+                                           actfun for item in sublist]):
+            raise ValueError("Each element must be a (callable) function")
+        else:
+            self.actfun = actfun
+
+    def setCompFun(self, compfun):
+        if type(compfun) is not list or tuple:
+            raise TypeError("Argument compfun must be a list or a tuple")
+        elif len(compfun) != 2:
+            raise ValueError("Argument compfun must be of length 2")
+        elif any(not callable(f) for f in compfun):
+            raise ValueError("Each element must be a (callable) function")
+        else:
+            self.compfun = compfun
+
+    def setCompFact(self, compfact):
+        try:
+            np.multiply(compfact, np.ones([3, 2]))
+            np.multiply(compfact, np.ones([4, 7]))
+        except:
+            raise TypeError("compfact should work with np.multiply")
+        self.compfact = compfact
+
     def propagate(self, x):
         # Input checks
         if type(x) is not np.ndarray or x.ndim > 2:
@@ -161,12 +176,13 @@ class NeuralNet:
         return np.multiply(np.divide(1, 2),
                            np.sum(np.square(np.subtract(self.a[-1], y))))
 
-    def cost(self, x, y, k):
-        error = self.error(x, y)
-        complexity = []             # TODO
-        return error + self.k * complexity
+    def cost(self, x, y):
+        complexity = 0
+        for i in self.W:
+            complexity += self.compfun[0](i)
+        return np.add(self.error(x, y), np.multiply(self.compfact, complexity))
 
-    def gradCost(self, x, y):       # TODO, add complexity term
+    def gradError(self, x, y):
         self.propagate(x)
         if type(y) is not np.ndarray or y.shape != self.a[-1].shape:
             raise ValueError("y must be a numpy array of shape \
@@ -184,6 +200,11 @@ class NeuralNet:
             dJdW.insert(0, np.dot(d[0], self.a[-i - 1].T))
             dJdb.insert(0, np.dot(d[0], O))
         return dJdW, dJdb
+
+    def gradCost(self, x, y):
+        # might be a good idea to eventually remove gradError (since it should
+        # not be used) and do all calculations here instead
+        return self.gradError(x, y)     # TODO: add complexity term
 
     def optimCost(self, x, y):
         if type(x) and type(y) is not np.ndarray:
