@@ -65,14 +65,14 @@ class NeuralNet:
             actfun = [nf.reLU, nf.reLUPrime]
             if self.neuralShape[-1] == 1:
                 actfun.append(nf.linear)
-                actfun.append(lambda x: np.ones(x.shape()))
+                actfun.append(lambda x: np.ones(x.shape))
             else:
                 actfun.append(nf.softmax)
                 actfun.append(nf.softmaxPrime)
         self.setActFun(actfun)
 
         if compfun is None:
-            def tempfun(x): return np.zeros(x.shape())
+            def tempfun(x): return np.zeros(x.shape)
             compfun = [tempfun, tempfun]
         self.setCompFun(compfun)
         self.setCompFact(compfact)
@@ -144,6 +144,7 @@ class NeuralNet:
         else:
             self.compfun = compfun
 
+# TODO: fix better checks here
     def setCompFact(self, compfact):
         try:
             np.multiply(compfact, np.ones([3, 2]))
@@ -163,7 +164,7 @@ class NeuralNet:
             x.shape = [len(x), 1]
         self.z = [None]
         self.a = [x]
-        for i in range(0, self.N - 1):
+        for i in range(self.N):
             self.z.append = np.add(self.b[i], np.dot(self.W[i], self.a[i]))
             self.a.append = self.actfun(self.z[i + 1])
         return self.a[-1]

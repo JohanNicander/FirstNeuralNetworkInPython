@@ -2,7 +2,9 @@ import numpy as np
 
 # \\TODO: ändra ev till tuplar med (funktion, derivata)
 
+###############################################################################
 # Actfuns
+###############################################################################
 
 
 def sigmoid(x):
@@ -78,7 +80,9 @@ def linear(x, a=1):
 #        raise TypeError("Wrong input type to linearPRIME")
 #    return a  # //TODO: ÖM... Ja..
 
+###############################################################################
 # Compfuns
+###############################################################################
 # TODO, should perhaps also work for list of ndarrays
 
 def L1(x):
