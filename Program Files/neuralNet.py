@@ -2,6 +2,8 @@ import numpy as np
 import sys
 import io
 import neuralFuns as nf
+from scipy import optimize
+
 
 sys.stdout = io.TextIOWrapper(sys.stdout.detach(), encoding='utf-8')
 sys.stderr = io.TextIOWrapper(sys.stderr.detach(), encoding='utf-8')
@@ -213,9 +215,4 @@ class NeuralNet:
         elif x.shape[1] != y.shape[1]:
             raise ValueError("x and y must have same number of columns")
 
-        d = []
-        dJdW = []
-        for i in range(0, len(self.neuralShape)):
-            d[i] = np.zeros(self.a[i].shape)
-            dJdW[i] = np.zeros(self.W[i - 1].shape)
-        dJdW.pop(0)
+# TODO: Wraper till optimize och optimize själv
