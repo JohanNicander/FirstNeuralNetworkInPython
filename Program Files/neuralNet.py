@@ -254,8 +254,10 @@ class NeuralNet:
                 kwargs[key] = default
         temp = self.getState()
         optimRes = optimize.minimize(**kwargs)
-        if not optimRes.success:
+        if optimRes.success:
             self.setState(temp)
+        else:
+            self.setState(optimRes.x)
         return optimRes
 
     def train(self):
