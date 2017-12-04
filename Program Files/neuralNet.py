@@ -227,14 +227,14 @@ class NeuralNet:
             raise ValueError("Arguments must be numpy arrays")
         elif x.shape[1] != y.shape[1]:
             raise ValueError("x and y must have same number of columns")
+        defaultoptions = {'maxiter': 200, 'disp': True}
         tempdict = {'fun': self.gradWrapper, 'x0': self.getState,
                     'args': (x, y), 'method': 'BFGS', 'jac': True,
-                    'options': {'maxiter': 200, 'disp': True}}
+                    'options': defaultoptions}
         for key, default in tempdict:
             if key not in kwargs:
                 kwargs[key] = default
 
-        options = {'maxiter': 200, 'disp': True}
         optimRes = optimize.minimize(**kwargs)
 
         def optimWrapper(self, state, x, y):
