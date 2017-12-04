@@ -158,6 +158,15 @@ class NeuralNet:
         self.compfact = compfact
 
 # TODO: setter and getter for state (a long vector containing W and b)
+    def setState(self):
+        pass
+
+    def getState(self):
+        temp = []
+        for w in self.W:
+            temp = np.concatenate((temp, w.ravel()))
+        return np.concatenate((temp, self.b.ravel()))
+
 
 ###############################################################################
 # General NeuralNet functions
@@ -221,7 +230,7 @@ class NeuralNet:
 # Training and optimizing
 ###############################################################################
 
-    def optimCost(self, x, y, **qwargs):
+    def optimCost(self, x, y, **kwargs):
         if type(x) and type(y) is not np.ndarray:
             raise ValueError("Arguments must be numpy arrays")
         elif x.shape[1] != y.shape[1]:
