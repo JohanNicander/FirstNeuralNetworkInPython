@@ -217,7 +217,7 @@ class NeuralNet:
         elif x.shape[1] != y.shape[1]:
             raise ValueError("x and y must have same number of columns")
 
-        def optimwrapper(self, state, x, y):
+        def optimWrapper(self, state, x, y):
             self.setState(state)
             ret = []
             temp = self.gradCost(x, y)
@@ -227,3 +227,13 @@ class NeuralNet:
             return [self.cost(x, y), ret]
 
 # TODO: Wraper till optimize och optimize själv
+
+    def callback(self, state):
+        self.setState(state)
+        # //TODO:Nånting som sparar typ värdet på kostfunktionen + ev utritning
+
+    def train(self):
+        options = {'maxiter': 200, 'disp': True}
+        optimRes = optimize.minimize(self.gradWrapper, self.getState, jac=True,
+                                     method='BFGS', args=(x, y),
+                                     options=options, callback=self.callback)
