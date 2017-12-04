@@ -221,11 +221,15 @@ class NeuralNet:
 # Training and optimizing
 ###############################################################################
 
-    def optimCost(self, x, y):
+    def optimCost(self, x, y, **qwargs):
         if type(x) and type(y) is not np.ndarray:
             raise ValueError("Arguments must be numpy arrays")
         elif x.shape[1] != y.shape[1]:
             raise ValueError("x and y must have same number of columns")
+        options = {'maxiter': 200, 'disp': True}
+        optimRes = optimize.minimize(self.gradWrapper, self.getState, jac=True,
+                                     method='BFGS', args=(x, y),
+                                     options=options, callback=self.callback)
 
         def optimWrapper(self, state, x, y):
             self.setState(state)
@@ -243,7 +247,4 @@ class NeuralNet:
         # //TODO:Nånting som sparar typ värdet på kostfunktionen + ev utritning
 
     def train(self):
-        options = {'maxiter': 200, 'disp': True}
-        optimRes = optimize.minimize(self.gradWrapper, self.getState, jac=True,
-                                     method='BFGS', args=(x, y),
-                                     options=options, callback=self.callback)
+        pass
