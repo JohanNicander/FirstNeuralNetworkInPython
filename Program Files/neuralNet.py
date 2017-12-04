@@ -234,8 +234,10 @@ class NeuralNet:
         for key, default in tempdict:
             if key not in kwargs:
                 kwargs[key] = default
-
+        temp = self.getState()
         optimRes = optimize.minimize(**kwargs)
+        if not optimRes.success:
+            self.setState(temp)
 
         def optimWrapper(self, state, x, y):
             self.setState(state)
