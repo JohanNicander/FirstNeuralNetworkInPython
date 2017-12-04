@@ -155,6 +155,8 @@ class NeuralNet:
             raise TypeError("compfact should work with np.multiply")
         self.compfact = compfact
 
+# TODO: setter and getter for state (a long vector containing W and b)
+
     def propagate(self, x):
         # Input checks
         if type(x) is not np.ndarray or x.ndim > 2:
@@ -214,5 +216,14 @@ class NeuralNet:
             raise ValueError("Arguments must be numpy arrays")
         elif x.shape[1] != y.shape[1]:
             raise ValueError("x and y must have same number of columns")
+
+        def optimwrapper(self, state, x, y):
+            self.setState(state)
+            ret = []
+            temp = self.gradCost(x, y)
+            for elems in temp:
+                for elem in elems:
+                    ret.append(elem.ravel())
+            return [self.cost(x, y), ret]
 
 # TODO: Wraper till optimize och optimize själv
