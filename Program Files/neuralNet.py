@@ -223,6 +223,15 @@ class NeuralNet:
 ###############################################################################
 
     def optimCost(self, x, y, **kwargs):
+        def optimWrapper(self, state, x, y):
+            self.setState(state)
+            ret = []
+            temp = self.gradCost(x, y)
+            for elems in temp:
+                for elem in elems:
+                    ret.append(elem.ravel())
+            return [self.cost(x, y), ret]
+
         if type(x) and type(y) is not np.ndarray:
             raise ValueError("Arguments must be numpy arrays")
         elif x.shape[1] != y.shape[1]:
@@ -239,15 +248,6 @@ class NeuralNet:
         if not optimRes.success:
             self.setState(temp)
         return optimRes
-
-        def optimWrapper(self, state, x, y):
-            self.setState(state)
-            ret = []
-            temp = self.gradCost(x, y)
-            for elems in temp:
-                for elem in elems:
-                    ret.append(elem.ravel())
-            return [self.cost(x, y), ret]
 
     def train(self):
         pass
