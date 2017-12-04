@@ -238,6 +238,7 @@ class NeuralNet:
         optimRes = optimize.minimize(**kwargs)
         if not optimRes.success:
             self.setState(temp)
+        return optimRes
 
         def optimWrapper(self, state, x, y):
             self.setState(state)
