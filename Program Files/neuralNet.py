@@ -235,9 +235,7 @@ class NeuralNet:
                 kwargs[key] = default
 
         options = {'maxiter': 200, 'disp': True}
-        optimRes = optimize.minimize(self.gradWrapper, self.getState, jac=True,
-                                     method='BFGS', args=(x, y),
-                                     options=options, callback=self.callback)
+        optimRes = optimize.minimize(**kwargs)
 
         def optimWrapper(self, state, x, y):
             self.setState(state)
