@@ -78,8 +78,10 @@ class NeuralNet:
             compfun = [tempfun, tempfun]
         self.setCompFun(compfun)
         self.setCompFact(compfact)
+###############################################################################
+# Setters and getters
+###############################################################################
 
-    # Setters
     def setNeuralShape(self, neuralShape=None):
         if type(neuralShape) is not np.ndarray or neuralShape.ndim != 1:
             raise ValueError("Argument neuralShape must be a numpy array")
@@ -157,6 +159,10 @@ class NeuralNet:
 
 # TODO: setter and getter for state (a long vector containing W and b)
 
+###############################################################################
+# General NeuralNet functions
+###############################################################################
+
     def propagate(self, x):
         # Input checks
         if type(x) is not np.ndarray or x.ndim > 2:
@@ -210,6 +216,10 @@ class NeuralNet:
         # might be a good idea to eventually remove gradError (since it should
         # not be used) and do all calculations here instead
         return self.gradError(x, y)     # TODO: add complexity term
+
+###############################################################################
+# Training and optimizing
+###############################################################################
 
     def optimCost(self, x, y):
         if type(x) and type(y) is not np.ndarray:
