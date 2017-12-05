@@ -61,7 +61,7 @@ class NeuralNet:
     #           k2 \in (0, 1],  might be better to for golden ratio search (?)
 
     def __init__(self, neuralShape, actfun=None, compfun=None, compfact=0):
-        self.setNeuralShape(neuralShape, actfun)
+        self.setNeuralShape(neuralShape)
 
         if actfun is None:
             actfun = [nf.reLU, nf.reLUPrime]
@@ -83,12 +83,11 @@ class NeuralNet:
 # Setters and getters
 ###############################################################################
 
-    def setNeuralShape(self, neuralShape=None):
+    def setNeuralShape(self, neuralShape):
         if type(neuralShape) is not np.ndarray or neuralShape.ndim != 1:
             raise ValueError("Argument neuralShape must be a numpy array")
         else:
             self.neuralShape = neuralShape
-            self.N = neuralShape.shape[0]
 
     def setWeight(self, W=None):
         if W is None:
@@ -159,14 +158,36 @@ class NeuralNet:
         self.compfact = compfact
 
 # TODO: setter and getter for state (a long vector containing W and b)
-    def setState(self):
-        pass
+    def setState(self, wlist):
+        for i in self.neuralShape.size - 1:
+            self.W = wlist[:self.neuralShape[i + 1] * self.neuralShape[i]]
+            wlist = wlist[self.neuralShape[i + 1] * self.neuralShape[i]:]
+            self.b = wlist[:self.neuralShape[i + 1]]
+            wlist = wlist[self.neuralShape[i + 1]:]
 
+
+# Won't work since b is a list of vectors
     def getState(self):
-        temp = []
+        temp = np.array([])
         for w in self.W:
             temp = np.concatenate((temp, w.ravel()))
         return np.concatenate((temp, self.b.ravel()))
+
+# Similar to getState but should work
+    def getState2(self):
+        temp = np.array([])
+        for i in len(self.W):
+            temp = np.concatenate((temp, np.concatenate((self.W[i].ravel(),
+                                                         self.b[i].ravel()))))
+        return temp
+
+# Another way to do things, which is better/faster?
+    def getState3(self):
+        temp = []
+        for i in len(self.W):
+            temp.append(np.ndarray.tolist(self.W[i].ravel()).append(
+                        np.ndarray.tolist(self.b[i].ravel())))
+        return np.array(temp)
 
 
 ###############################################################################
@@ -184,7 +205,7 @@ class NeuralNet:
             x.shape = [len(x), 1]
         self.z = [None]
         self.a = [x]
-        for i in range(self.N):
+        for i in range(self.neuralShape.size):
             self.z.append = np.add(self.b[i], np.dot(self.W[i], self.a[i]))
             self.a.append = self.actfun(self.z[i + 1])
         return self.a[-1]
@@ -215,7 +236,7 @@ class NeuralNet:
                          self.actfun[1][1](self.z[-1]))]
         dJdW = [np.dot(d[0], self.a[-2].T)]
         dJdb = [np.dot(d[0], O)]
-        for i in range(2, self.N):
+        for i in range(2, self.neuralShape.size):
             d.insert(0, np.multiply(np.dot(self.W[-i + 1].T, d[-i + 1]),
                                     self.actfun[0][1](self.z[-i])))
             dJdW.insert(0, np.dot(d[0], self.a[-i - 1].T))
@@ -245,6 +266,7 @@ class NeuralNet:
             raise ValueError("Arguments must be numpy arrays")
         elif x.shape[1] != y.shape[1]:
             raise ValueError("x and y must have same number of columns")
+
         defaultoptions = {'maxiter': 200, 'disp': True}
         tempdict = {'fun': self.gradWrapper, 'x0': self.getState,
                     'args': (x, y), 'method': 'BFGS', 'jac': True,
@@ -255,9 +277,9 @@ class NeuralNet:
         temp = self.getState()
         optimRes = optimize.minimize(**kwargs)
         if optimRes.success:
-            self.setState(temp)
-        else:
             self.setState(optimRes.x)
+        else:
+            self.setState(temp)
         return optimRes
 
     def train(self):
