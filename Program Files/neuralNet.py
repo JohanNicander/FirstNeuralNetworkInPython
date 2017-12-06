@@ -119,7 +119,7 @@ class NeuralNet:
                 self.b.append(np.random.random_sample(np.array([i, 1])))
         elif type(b) is not list or len(b) != len(self.neuralShape) - 1:
             raise ValueError("b is not a list containing N-1 elements")
-        for i in range(len(b)):     # //TODO: Fixa så det blir som i setWeights
+        for i in range(len(b)):     # TODO: Fixa så det blir som i setWeights
             if type(b[i]) is not np.ndarray:
                 raise TypeError("b contains non ndarrays")
             elif b[i].ndim == 1:
@@ -166,11 +166,12 @@ class NeuralNet:
         self.compfact = compfact
 
 # TODO: setter and getter for state (a long vector containing W and b)
+# TODO: won't work... set shape....
     def setState(self, wlist):
         for i in self.neuralShape.size - 1:
-            self.W = wlist[:self.neuralShape[i + 1] * self.neuralShape[i]]
+            self.W[i] = wlist[:self.neuralShape[i + 1] * self.neuralShape[i]]
             wlist = wlist[self.neuralShape[i + 1] * self.neuralShape[i]:]
-            self.b = wlist[:self.neuralShape[i + 1]]
+            self.b[i] = wlist[:self.neuralShape[i + 1]]
             wlist = wlist[self.neuralShape[i + 1]:]
 
 # TODO Pick one
@@ -212,13 +213,14 @@ class NeuralNet:
 
     def propagate(self, x):
         # Input checks
+        # TODO: try converting to ndarray (?)
         if type(x) is not np.ndarray or x.ndim > 2:
             raise ValueError("x must be a numpyarray of dimension at most 2")
         elif x.shape[0] != self.neuralShape[0]:
             raise ValueError("x.shape[0] must equal neuralShape[0]")
 
         if x.ndim == 1:
-            x.shape = [len(x), 1]
+            x.shape = [x.size, 1]
         self.z = [None]
         self.a = [x]
         for i in range(self.neuralShape.size):
