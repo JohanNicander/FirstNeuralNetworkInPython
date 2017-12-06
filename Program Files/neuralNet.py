@@ -64,13 +64,11 @@ class NeuralNet:
         self.setNeuralShape(neuralShape)
 
         if actfun is None:
-            actfun = [nf.reLU, nf.reLUPrime]
+            actfun = [[nf.reLU, nf.reLUPrime]]
             if self.neuralShape[-1] == 1:
-                actfun.append(nf.linear)
-                actfun.append(lambda x: np.ones(x.shape))
+                actfun.append([nf.linear, lambda x: np.ones(x.shape)])
             else:
-                actfun.append(nf.softmax)
-                actfun.append(nf.softmaxPrime)
+                actfun.append([nf.softmax, nf.softmaxPrime])
         self.setActFun(actfun)
 
         if compfun is None:
@@ -79,6 +77,7 @@ class NeuralNet:
         self.setCompFun(compfun)
         self.setCompFact(compfact)
 
+    # //TODO: Johan sidprojekt: Sygg toString
 ###############################################################################
 # Setters and getters
 ###############################################################################
@@ -128,7 +127,11 @@ class NeuralNet:
         self.b = b
 
     def setActFun(self, actfun):
-        if type(actfun) is not list or tuple:
+        # DEBUG START
+        # print(type(actfun))
+        # print(actfun)
+        # DEBUG STOP
+        if type(actfun) is not list and not tuple:
             raise TypeError("Argument actfun must be a list or a tuple")
         elif any(len(l) != 2 for l in actfun) or len(actfun) != 2:
             raise ValueError("Argument actfun must have shape 2x2")
@@ -139,7 +142,7 @@ class NeuralNet:
             self.actfun = actfun
 
     def setCompFun(self, compfun):
-        if type(compfun) is not list or tuple:
+        if type(compfun) is not list and not tuple:
             raise TypeError("Argument compfun must be a list or a tuple")
         elif len(compfun) != 2:
             raise ValueError("Argument compfun must be of length 2")
