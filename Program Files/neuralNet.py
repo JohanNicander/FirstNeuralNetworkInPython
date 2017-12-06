@@ -119,11 +119,16 @@ class NeuralNet:
                 self.b.append(np.random.random_sample(np.array([i, 1])))
         elif type(b) is not list or len(b) != len(self.neuralShape) - 1:
             raise ValueError("b is not a list containing N-1 elements")
-        for i in range(len(b)):     # TODO: Fixa så det blir som i setWeights
-            if type(b[i]) is not np.ndarray:
-                raise TypeError("b contains non ndarrays")
-            elif b[i].ndim == 1:
-                b[i].reshape(np.ndarray([len(b), 1]))
+        elif any(type(btem) is not np.ndarray for btem in b):
+            raise TypeError("b contains non ndarrays")
+        elif any(b[i].ndim == 1 for i in range(len(b))):
+            b[i].shape = np.ndarray([b[i].size, 1])
+        elif any(b[i].shape != np.array([b[i].size, 1])
+                 for i in range(len(b))):
+            b[i] = b[i].T
+        # //TODO: FIXA SÅ ATT SISTA BLIR SOM DET SKA (typ all eller nått och
+        #         typ alla chekar ska köras)
+        for i in range(len(b)):     # //TODO: Fixa så det blir som i setWeights
             elif b[i].shape != np.array([1, self.neuralShape[i + 1]]):
                 b[i] = b[i].T
             elif b[i].shape != np.array([self.neuralShape[i + 1], 1]):
