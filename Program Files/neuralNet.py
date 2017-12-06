@@ -84,6 +84,7 @@ class NeuralNet:
 ###############################################################################
 
     def setNeuralShape(self, neuralShape):
+        # TODO: try converting to ndarray
         if type(neuralShape) is not np.ndarray or neuralShape.ndim != 1:
             raise ValueError("Argument neuralShape must be a numpy array")
         else:
@@ -185,8 +186,8 @@ class NeuralNet:
     def getState3(self):
         temp = []
         for i in len(self.W):
-            temp.append(np.ndarray.tolist(self.W[i].ravel()).append(
-                        np.ndarray.tolist(self.b[i].ravel())))
+            temp.extend([np.ndarray.tolist(self.W[i].ravel()),
+                         np.ndarray.tolist(self.b[i].ravel())])
         return np.array(temp)
 
 
@@ -255,24 +256,27 @@ class NeuralNet:
     def optimCost(self, x, y, **kwargs):
         def optimWrapper(self, state, x, y):
             self.setState(state)
-            ret = []
+            grad = []
             temp = self.gradCost(x, y)
             for elems in temp:
                 for elem in elems:
-                    ret.append(elem.ravel())
-            return [self.cost(x, y), ret]
+                    grad.append(elem.ravel())
+            return [self.cost(x, y), grad]
 
         if type(x) and type(y) is not np.ndarray:
             raise ValueError("Arguments must be numpy arrays")
         elif x.shape[1] != y.shape[1]:
             raise ValueError("x and y must have same number of columns")
 
+        # TODO: can minimize take options as kwargs??
+        # TODO: better handling of options...
         defaultoptions = {'maxiter': 200, 'disp': True}
         tempdict = {'fun': self.gradWrapper, 'x0': self.getState,
                     'args': (x, y), 'method': 'BFGS', 'jac': True,
                     'options': defaultoptions}
         for key, default in tempdict:
             if key not in kwargs:
+                # TODO: checks?
                 kwargs[key] = default
         temp = self.getState()
         optimRes = optimize.minimize(**kwargs)
