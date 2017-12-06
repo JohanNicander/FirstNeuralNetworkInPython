@@ -189,6 +189,14 @@ class NeuralNet:
                         np.ndarray.tolist(self.b[i].ravel())))
         return np.array(temp)
 
+# Similar to getState but should work and return wights and biases jumbled
+    def getState4(self):
+        temp = np.array([])
+        for w in self.W:
+            temp = np.concatenate((temp, w.ravel()))
+        for b in self.b:
+            temp = np.concatenate((temp, b.ravel()))
+        return temp
 
 ###############################################################################
 # General NeuralNet functions
