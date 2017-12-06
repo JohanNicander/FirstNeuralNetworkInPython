@@ -62,6 +62,8 @@ class NeuralNet:
 
     def __init__(self, neuralShape, actfun=None, compfun=None, compfact=0):
         self.setNeuralShape(neuralShape)
+        self.setWeight()
+        self.setBias()
 
         if actfun is None:
             actfun = [[nf.reLU, nf.reLUPrime]]
@@ -88,8 +90,6 @@ class NeuralNet:
             raise ValueError("Argument neuralShape must be a numpy array")
         else:
             self.neuralShape = neuralShape
-            self.setWeight()
-            self.setBias()
 
     def setWeight(self, W=None):
         if W is None:
@@ -171,7 +171,7 @@ class NeuralNet:
             self.b = wlist[:self.neuralShape[i + 1]]
             wlist = wlist[self.neuralShape[i + 1]:]
 
-
+# TODO Pick one
 # Won't work since b is a list of vectors
     def getState(self):
         temp = np.array([])
