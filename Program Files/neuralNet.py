@@ -82,14 +82,14 @@ class NeuralNet:
 # Setters and getters
 ###############################################################################
 
-    def setNeuralShape(self, neuralShape):
+    def setNeuralShape(self, neuralShape, W=None, b=None):
         # TODO: try converting to ndarray
         if type(neuralShape) is not np.ndarray or neuralShape.ndim != 1:
             raise ValueError("Argument neuralShape must be a numpy array")
         else:
             self.neuralShape = neuralShape
-            self.setWeight()
-            self.setBias()
+            self.setWeight(W)
+            self.setBias(b)
 
     def setWeight(self, W=None):
         if W is None:
