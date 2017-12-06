@@ -89,6 +89,8 @@ class NeuralNet:
             raise ValueError("Argument neuralShape must be a numpy array")
         else:
             self.neuralShape = neuralShape
+            self.setWeight()
+            self.setBias()
 
     def setWeight(self, W=None):
         if W is None:
