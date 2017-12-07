@@ -129,7 +129,7 @@ class NeuralNet:
         # //TODO: FIXA SÅ ATT SISTA BLIR SOM DET SKA (typ all eller nått och
         #         typ alla chekar ska köras)
         for i in range(len(b)):     # //TODO: Fixa så det blir som i setWeights
-            elif b[i].shape != np.array([1, self.neuralShape[i + 1]]):
+            if b[i].shape != np.array([1, self.neuralShape[i + 1]]):
                 b[i] = b[i].T
             elif b[i].shape != np.array([self.neuralShape[i + 1], 1]):
                 raise ValueError("W[" + str(i) + "] is not of consistent \
@@ -171,12 +171,14 @@ class NeuralNet:
         self.compfact = compfact
 
 # TODO: setter and getter for state (a long vector containing W and b)
-# TODO: won't work... set shape....
     def setState(self, wlist):
         for i in self.neuralShape.size - 1:
-            self.W[i] = wlist[:self.neuralShape[i + 1] * self.neuralShape[i]]
+            self.W[i] = wlist[:self.neuralShape[i + 1]
+                              * self.neuralShape[i]].reshape(
+                [self.neuralShape[i + 1], self.neuralShape[i]])
             wlist = wlist[self.neuralShape[i + 1] * self.neuralShape[i]:]
-            self.b[i] = wlist[:self.neuralShape[i + 1]]
+            self.b[i] = wlist[:self.neuralShape[i + 1]].reshape(
+                self.neuralShape[i + 1], 1)
             wlist = wlist[self.neuralShape[i + 1]:]
 
 # TODO Pick one
