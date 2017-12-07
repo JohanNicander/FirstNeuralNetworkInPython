@@ -239,21 +239,21 @@ class NeuralNet:
         self.a = [x]
         length = self.neuralShape.size
 
-        def propagateInner(fun):
+        def propagateInner(fun, i):
             self.z.append(np.add(self.b[i], np.dot(self.W[i], self.a[i])))
             self.a.append(fun(self.z[i + 1]))
 
-        for i in range(length - 1):
-            propagateInner(self.actfun[0][0])
-        propagateInner(self.actfun[1][0])
+        for j in range(length - 2):
+            propagateInner(self.actfun[0][0], j)
+        propagateInner(self.actfun[1][0], length - 2)
 
         return self.a[-1]
 
     def error(self, x, y):
         self.propagate(x)
         if type(y) is not np.ndarray or y.shape != self.a[-1].shape:
-            raise ValueError("y must be a numpy array of shape \
-                              [neuralShape[-1], x.shape[1]]")
+            raise ValueError("y must be a numpy array of shape" +
+                             str([self.neuralShape[-1], x.shape[1]]))
         return np.multiply(np.divide(1, 2),
                            np.sum(np.square(np.subtract(self.a[-1], y))))
 
