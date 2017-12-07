@@ -75,7 +75,7 @@ class NeuralNet:
 
         if compfun is None:
             def tempfun(x): return np.zeros(x.shape)
-            compfun = [tempfun, tempfun]
+            compfun = [lambda x: 0, lambda x: np.zeros(x.shape)]
         self.setCompFun(compfun)
         self.setCompFact(compfact)
 
@@ -193,7 +193,11 @@ class NeuralNet:
         return np.concatenate((temp, self.b.ravel()))
 
 # Similar to getState but should work
-    def getState2(self):
+    def getState2(self, W=None, b=None):
+        if W is None:
+            W = self.W
+        if b is None:
+            b = self.b
         temp = np.array([])
         for i in range(len(self.W)):
             temp = np.concatenate((temp, np.concatenate((self.W[i].ravel(),
