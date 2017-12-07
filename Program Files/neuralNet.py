@@ -185,13 +185,6 @@ class NeuralNet:
             wlist = wlist[self.neuralShape[i + 1]:]
 
 # TODO Pick one
-# Won't work since b is a list of vectors
-    def getState(self):
-        temp = np.array([])
-        for w in self.W:
-            temp = np.concatenate((temp, w.ravel()))
-        return np.concatenate((temp, self.b.ravel()))
-
 # Similar to getState but should work
     def getState2(self, W=None, b=None):
         if W is None:
@@ -205,7 +198,11 @@ class NeuralNet:
         return temp
 
 # Another way to do things, which is better/faster?
-    def getState3(self):
+    def getState(self, W=None, b=None):
+        if W is None:
+            W = self.W
+        if b is None:
+            b = self.b
         temp = []
         for i in range(len(self.W)):
             temp.extend([np.ndarray.tolist(self.W[i].ravel()),
@@ -266,8 +263,8 @@ class NeuralNet:
     def gradError(self, x, y):
         self.propagate(x)
         if type(y) is not np.ndarray or y.shape != self.a[-1].shape:
-            raise ValueError("y must be a numpy array of shape \
-                              [neuralShape[-1], x.shape[1]]")
+            raise ValueError("y must be a numpy array of shape" +
+                             str([self.neuralShape[-1], x.shape[1]]))
 
         # M = self.a[0].shape[1]
         O = np.ones([self.a[0].shape[1], 1])    # O = np.ones([M, 1])
@@ -309,7 +306,7 @@ class NeuralNet:
         # TODO: can minimize take options as kwargs??
         # TODO: better handling of options...
         defaultoptions = {'maxiter': 200, 'disp': True}
-        tempdict = {'fun': self.gradWrapper, 'x0': self.getState,
+        tempdict = {'fun': self.optimWrapper, 'x0': self.getState,
                     'args': (x, y), 'method': 'BFGS', 'jac': True,
                     'options': defaultoptions}
         for key, default in tempdict:

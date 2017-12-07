@@ -65,8 +65,8 @@ def softmax(x):
 def softmaxPrime(x):
     if type(x) is not np.ndarray:
         raise TypeError("Wrong input type to softmaxPRIME")
-    return np.multiply(np.squre(softmax(x)), np.devide(np.sum(np.exp(x), 0),
-                                                       np.exp(x)) - 1)
+    return np.multiply(np.square(softmax(x)), np.divide(np.sum(np.exp(x), 0),
+                                                        np.exp(x)) - 1)
 
 
 def linear(x, a=1):
