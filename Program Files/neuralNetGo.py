@@ -8,5 +8,4 @@ x = np.array([1, 3, 4])
 x.shape = [3, 1]
 y = np.array([1, 0])
 y.shape = [2, 1]
-net.optimCost.optimWrapper(1, x, y)
 print(net.optimCost(x, y))

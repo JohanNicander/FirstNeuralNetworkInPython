@@ -302,7 +302,8 @@ class NeuralNet:
         # TODO: can minimize take options as kwargs??
         # TODO: better handling of options...
         defaultoptions = {'maxiter': 200, 'disp': True}
-        tempdict = {'fun': self.optimWrapper, 'x0': self.getState,
+        # TODO:AttributeError: 'function' object has no attribute 'optimWrapper'
+        tempdict = {'fun': self.optimCost.optimWrapper, 'x0': self.getState,
                     'args': (x, y), 'method': 'BFGS', 'jac': True,
                     'options': defaultoptions}
         for key, default in tempdict:
