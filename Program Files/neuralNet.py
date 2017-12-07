@@ -233,9 +233,16 @@ class NeuralNet:
             x.shape = [x.size, 1]
         self.z = [None]
         self.a = [x]
-        for i in range(self.neuralShape.size):
-            self.z.append = np.add(self.b[i], np.dot(self.W[i], self.a[i]))
-            self.a.append = self.actfun(self.z[i + 1])
+        length = self.neuralShape.size
+
+        def propagateInner(fun):
+            self.z.append(np.add(self.b[i], np.dot(self.W[i], self.a[i])))
+            self.a.append(fun(self.z[i + 1]))
+
+        for i in range(length - 1):
+            propagateInner(self.actfun[0][0])
+        propagateInner(self.actfun[1][0])
+
         return self.a[-1]
 
     def error(self, x, y):
