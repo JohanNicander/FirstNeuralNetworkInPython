@@ -119,22 +119,25 @@ class NeuralNet:
                 self.b.append(np.random.random_sample(np.array([i, 1])))
         elif type(b) is not list or len(b) != len(self.neuralShape) - 1:
             raise ValueError("b is not a list containing N-1 elements")
-        elif any(type(btem) is not np.ndarray for btem in b):
+        elif any(type(btmp) is not np.ndarray for btmp in b):
             raise TypeError("b contains non ndarrays")
-        elif any(b[i].ndim == 1 for i in range(len(b))):
-            b[i].shape = np.ndarray([b[i].size, 1])
-        elif any(b[i].shape != np.array([b[i].size, 1])
-                 for i in range(len(b))):
-            b[i] = b[i].T
-        # //TODO: FIXA SÅ ATT SISTA BLIR SOM DET SKA (typ all eller nått och
-        #         typ alla chekar ska köras)
-        for i in range(len(b)):     # //TODO: Fixa så det blir som i setWeights
-            elif b[i].shape != np.array([1, self.neuralShape[i + 1]]):
-                b[i] = b[i].T
-            elif b[i].shape != np.array([self.neuralShape[i + 1], 1]):
-                raise ValueError("W[" + str(i) + "] is not of consistent \
-                                    size with neuralShape")
-        self.b = b
+        #  //TODO: FIXA SÅ ATT SISTA BLIR SOM DET SKA (typ all eller nått och
+        #          typ alla chekar ska köras)
+        #
+        #       Jag känner kolla om fel, men kanske inte fixa alla....
+        #
+        # for i in range(len(b)):
+        #     if b[i].ndim == 1:
+        #         b[i].shape = np.ndarray([b[i].size, 1])
+        #     elif b[i].shape != np.array([b[i].size, 1]):
+        #         b[i] = b[i].T
+        #     elif b[i].shape != np.array([1, self.neuralShape[i + 1]]):
+        #         b[i] = b[i].T
+        #     elif b[i].shape != np.array([self.neuralShape[i + 1], 1]):
+        #         raise ValueError("W[" + str(i) + "] is not of consistent \
+        #                             size with neuralShape")
+        else:
+            self.b = b
 
     def setActFun(self, actfun):
         # DEBUG START
@@ -190,7 +193,7 @@ class NeuralNet:
 # Similar to getState but should work
     def getState2(self):
         temp = np.array([])
-        for i in len(self.W):
+        for i in range(len(self.W)):
             temp = np.concatenate((temp, np.concatenate((self.W[i].ravel(),
                                                          self.b[i].ravel()))))
         return temp
@@ -198,7 +201,7 @@ class NeuralNet:
 # Another way to do things, which is better/faster?
     def getState3(self):
         temp = []
-        for i in len(self.W):
+        for i in range(len(self.W)):
             temp.extend([np.ndarray.tolist(self.W[i].ravel()),
                          np.ndarray.tolist(self.b[i].ravel())])
         return np.array(temp)
