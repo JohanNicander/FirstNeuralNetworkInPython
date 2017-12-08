@@ -306,7 +306,7 @@ class NeuralNet:
         tempdict = {'fun': self.optimCost.optimWrapper, 'x0': self.getState,
                     'args': (x, y), 'method': 'BFGS', 'jac': True,
                     'options': defaultoptions}
-        for key, default in tempdict:
+        for key, default in tempdict.items():
             if key not in kwargs:
                 # TODO: checks?
                 kwargs[key] = default
