@@ -187,11 +187,12 @@ class NeuralNet:
         return self.a[-1]
 
     def error(self, x, y):
+        nrex = x.shape[1]
         self.propagate(x)
         if type(y) is not np.ndarray or y.shape != self.a[-1].shape:
             raise ValueError("y must be a numpy array of shape " +
                              str([self.neuralShape[-1], x.shape[1]]))
-        return np.multiply(np.divide(1, 2),
+        return np.multiply(np.divide(1, 2 * nrex),
                            np.sum(np.square(np.subtract(self.a[-1], y))))
 
     def cost(self, x, y):
@@ -234,7 +235,8 @@ class NeuralNet:
         temp = self.gradCost(x, y)
         return [self.cost(x, y), self.getState(*temp)]
 
-    def optimCost(self, x, y, **kwargs):
+    def optimCost(self, x, y, setx=False, **kwargs):
+        # setx: sets W and b regardless of success
         if type(x) and type(y) is not np.ndarray:
             raise ValueError("Arguments must be numpy arrays")
         elif x.shape[1] != y.shape[1]:
@@ -252,9 +254,7 @@ class NeuralNet:
                 kwargs[key] = default
         temp = self.getState()
         optimRes = optimize.minimize(**kwargs)
-        if optimRes.success:
-            # DEBUG
-            print("yes")
+        if optimRes.success or setx:
             self.setState(optimRes.x)
         else:
             self.setState(temp)
