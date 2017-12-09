@@ -3,12 +3,12 @@ import numpy as np
 
 
 def fun(x):
-    return x.prod(axis=0)
+    return x.prod(axis=0).reshape(1, x.shape[1])
 
 
-shape = np.array([2, 3, 3, 1])
+shape = np.array([2, 5, 5, 5, 1])
 net = nn.NeuralNet(shape)
-x = 100 * np.random.random_sample([1000, 2])
+x = 20 * np.random.random_sample([10000, 2])
 print(x)
 x = x.T
 y = fun(x)
@@ -23,4 +23,7 @@ print(res.nit)
 print(res.message)
 print(res.success)
 
-print(net.propagate(np.array([10, 7])))
+temp = [np.array([[10], [7]]), np.array([[53], [17]]), np.array([[29], [45]]),
+        np.array([[95], [72]])]
+for x in temp:
+    print(net.error(x, fun(x)))
