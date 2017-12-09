@@ -74,18 +74,13 @@ def linear(x, a=1):
         raise TypeError("Wrong input type to linear")
     temp = np.sum(x, 0)
     temp.shape = [1, temp.size]
-    return np.multiply(a, temp)  # //TODO: Dimentioner och så...
-
-
-# def linearPRIME(a=1):
-#    if type(a) is not np.ndarray:
-#        raise TypeError("Wrong input type to linearPRIME")
-#    return a  # //TODO: ÖM... Ja..
+    return np.multiply(a, temp)
 
 ###############################################################################
 # Compfuns
 ###############################################################################
 # TODO, should perhaps also work for list of ndarrays
+
 
 def L1(x):
     if type(x) is not np.ndarray:

@@ -62,8 +62,10 @@ class NeuralNet:
 
     def __init__(self, neuralShape, actfun=None, compfun=None, compfact=0):
         self.setNeuralShape(neuralShape)
-        self.setWeight()
-        self.setBias()
+        self.W = [None] * (neuralShape.size - 1)
+        self.b = [None] * (neuralShape.size - 1)
+        self.setState(np.random.random_sample(np.dot(neuralShape[1:],
+                                                     neuralShape[:-1] + 1)))
 
         if actfun is None:
             actfun = [[nf.reLU, nf.reLUPrime]]
@@ -90,54 +92,6 @@ class NeuralNet:
             raise ValueError("Argument neuralShape must be a numpy array")
         else:
             self.neuralShape = neuralShape
-            self.setWeight(W)
-            self.setBias(b)
-
-    def setWeight(self, W=None):
-        if W is None:
-            self.W = []
-            j = 0
-            for i in np.nditer(self.neuralShape):
-                self.W.append(np.random.random_sample(np.array([i, j])))
-                j = i
-            self.W.pop(0)
-        elif type(W) is not list or len(W) != len(self.neuralShape) - 1:
-            raise ValueError("W is not a list containing N-1 elements")
-        elif any(type(w) is not np.ndarray for w in W):
-            raise TypeError("W contains non ndarrays")
-        elif any(W[i].shape != np.array([self.neuralShape[i + 1],
-                                         self.neuralShape[i]])
-                 for i in range(len(W))):
-            raise ValueError("W is not of consistent with neuralShape")
-        else:
-            self.W = W
-
-    def setBias(self, b=None):
-        if b is None:
-            self.b = []
-            for i in np.nditer(self.neuralShape[1:]):
-                self.b.append(np.random.random_sample(np.array([i, 1])))
-        elif type(b) is not list or len(b) != len(self.neuralShape) - 1:
-            raise ValueError("b is not a list containing N-1 elements")
-        elif any(type(btmp) is not np.ndarray for btmp in b):
-            raise TypeError("b contains non ndarrays")
-        #  //TODO: FIXA SÅ ATT SISTA BLIR SOM DET SKA (typ all eller nått och
-        #          typ alla chekar ska köras)
-        #
-        #       Jag känner kolla om fel, men kanske inte fixa alla....
-        #
-        # for i in range(len(b)):
-        #     if b[i].ndim == 1:
-        #         b[i].shape = np.ndarray([b[i].size, 1])
-        #     elif b[i].shape != np.array([b[i].size, 1]):
-        #         b[i] = b[i].T
-        #     elif b[i].shape != np.array([1, self.neuralShape[i + 1]]):
-        #         b[i] = b[i].T
-        #     elif b[i].shape != np.array([self.neuralShape[i + 1], 1]):
-        #         raise ValueError("W[" + str(i) + "] is not of consistent \
-        #                             size with neuralShape")
-        else:
-            self.b = b
 
     def setActFun(self, actfun):
         # DEBUG START
