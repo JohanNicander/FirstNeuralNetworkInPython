@@ -94,10 +94,6 @@ class NeuralNet:
             self.neuralShape = neuralShape
 
     def setActFun(self, actfun):
-        # DEBUG START
-        # print(type(actfun))
-        # print(actfun)
-        # DEBUG STOP
         if type(actfun) is not list and not tuple:
             raise TypeError("Argument actfun must be a list or a tuple")
         elif any(len(l) != 2 for l in actfun) or len(actfun) != 2:
@@ -145,9 +141,9 @@ class NeuralNet:
         if b is None:
             b = self.b
         temp = np.array([])
-        for i in range(len(self.W)):
-            temp = np.concatenate((temp, np.concatenate((self.W[i].ravel(),
-                                                         self.b[i].ravel()))))
+        for i in range(len(W)):
+            temp = np.concatenate((temp, np.concatenate((W[i].ravel(),
+                                                         b[i].ravel()))))
         return temp
 
 # Another way to do things, which is better/faster?
@@ -157,9 +153,9 @@ class NeuralNet:
         if b is None:
             b = self.b
         temp = []
-        for i in range(len(self.W)):
-            temp.extend(np.ndarray.tolist(self.W[i].ravel()))
-            temp.extend(np.ndarray.tolist(self.b[i].ravel()))
+        for i in range(len(W)):
+            temp.extend(np.ndarray.tolist(W[i].ravel()))
+            temp.extend(np.ndarray.tolist(b[i].ravel()))
         return np.array(temp)
 
 ###############################################################################
@@ -206,6 +202,7 @@ class NeuralNet:
 
     def gradError(self, x, y):
         self.propagate(x)
+        nrex = x.shape[1]
         if type(y) is not np.ndarray or y.shape != self.a[-1].shape:
             raise ValueError("y must be a numpy array of shape" +
                              str([self.neuralShape[-1], x.shape[1]]))
@@ -214,13 +211,13 @@ class NeuralNet:
         O = np.ones([self.a[0].shape[1], 1])    # O = np.ones([M, 1])
         d = [np.multiply(np.subtract(self.a[-1], y),
                          self.actfun[1][1](self.z[-1]))]
-        dJdW = [np.dot(d[0], self.a[-2].T)]
-        dJdb = [np.dot(d[0], O)]
+        dJdW = [np.dot(d[0], self.a[-2].T) / nrex]
+        dJdb = [np.dot(d[0], O) / nrex]
         for i in range(2, self.neuralShape.size):
             d.insert(0, np.multiply(np.dot(self.W[-i + 1].T, d[-i + 1]),
                                     self.actfun[0][1](self.z[-i])))
-            dJdW.insert(0, np.dot(d[0], self.a[-i - 1].T))
-            dJdb.insert(0, np.dot(d[0], O))
+            dJdW.insert(0, np.dot(d[0], self.a[-i - 1].T) / nrex)
+            dJdb.insert(0, np.dot(d[0], O) / nrex)
         return dJdW, dJdb
 
     def gradCost(self, x, y):
