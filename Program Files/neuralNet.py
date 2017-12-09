@@ -205,8 +205,8 @@ class NeuralNet:
             b = self.b
         temp = []
         for i in range(len(self.W)):
-            temp.extend([np.ndarray.tolist(self.W[i].ravel()),
-                         np.ndarray.tolist(self.b[i].ravel())])
+            temp.extend(np.ndarray.tolist(self.W[i].ravel()))
+            temp.extend(np.ndarray.tolist(self.b[i].ravel()))
         return np.array(temp)
 
 # Similar to getState but should work and return wights and biases jumbled
