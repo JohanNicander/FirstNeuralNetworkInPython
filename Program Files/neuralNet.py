@@ -175,7 +175,7 @@ class NeuralNet:
 
 # TODO: setter and getter for state (a long vector containing W and b)
     def setState(self, wlist):
-        for i in self.neuralShape.size - 1:
+        for i in range(self.neuralShape.size - 1):
             self.W[i] = wlist[:self.neuralShape[i + 1]
                               * self.neuralShape[i]].reshape(
                 [self.neuralShape[i + 1], self.neuralShape[i]])
@@ -302,7 +302,7 @@ class NeuralNet:
         # TODO: can minimize take options as kwargs??
         # TODO: better handling of options...
         defaultoptions = {'maxiter': 200, 'disp': True}
-        tempdict = {'fun': self.optimWrapper, 'x0': self.getState,
+        tempdict = {'fun': self.optimWrapper, 'x0': self.getState(),
                     'args': (x, y), 'method': 'BFGS', 'jac': True,
                     'options': defaultoptions}
         for key, default in tempdict.items():
