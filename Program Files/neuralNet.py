@@ -127,7 +127,6 @@ class NeuralNet:
             raise TypeError("compfact should work with np.multiply")
         self.compfact = compfact
 
-# TODO: setter and getter for state (a long vector containing W and b)
     def setState(self, wlist):
         for i in range(self.neuralShape.size - 1):
             self.W[i] = wlist[:self.neuralShape[i + 1]
@@ -162,15 +161,6 @@ class NeuralNet:
             temp.extend(np.ndarray.tolist(self.W[i].ravel()))
             temp.extend(np.ndarray.tolist(self.b[i].ravel()))
         return np.array(temp)
-
-# Similar to getState but should work and return wights and biases jumbled
-    def getState4(self):
-        temp = np.array([])
-        for w in self.W:
-            temp = np.concatenate((temp, w.ravel()))
-        for b in self.b:
-            temp = np.concatenate((temp, b.ravel()))
-        return temp
 
 ###############################################################################
 # General NeuralNet functions
