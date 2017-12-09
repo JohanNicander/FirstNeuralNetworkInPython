@@ -299,9 +299,9 @@ class NeuralNet:
         elif x.shape[1] != y.shape[1]:
             raise ValueError("x and y must have same number of columns")
 
-        # TODO: can minimize take options as kwargs??
+        # TODO: can minimize take options as kwargs?? No...
         # TODO: better handling of options...
-        defaultoptions = {'maxiter': 200, 'disp': True}
+        defaultoptions = {'maxiter': 200, 'disp': False}
         tempdict = {'fun': self.optimWrapper, 'x0': self.getState(),
                     'args': (x, y), 'method': 'BFGS', 'jac': True,
                     'options': defaultoptions}
