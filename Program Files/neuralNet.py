@@ -288,12 +288,12 @@ class NeuralNet:
 # Training and optimizing
 ###############################################################################
 
-    def optimCost(self, x, y, **kwargs):
-        def optimWrapper(self, state, x, y):
-            self.setState(state)
-            temp = self.gradCost(x, y)
-            return [self.cost(x, y), self.getState(*temp)]
+    def optimWrapper(self, state, x, y):
+        self.setState(state)
+        temp = self.gradCost(x, y)
+        return [self.cost(x, y), self.getState(*temp)]
 
+    def optimCost(self, x, y, **kwargs):
         if type(x) and type(y) is not np.ndarray:
             raise ValueError("Arguments must be numpy arrays")
         elif x.shape[1] != y.shape[1]:
@@ -302,8 +302,7 @@ class NeuralNet:
         # TODO: can minimize take options as kwargs??
         # TODO: better handling of options...
         defaultoptions = {'maxiter': 200, 'disp': True}
-        # TODO:AttributeError: 'function' object has no attribute 'optimWrapper'
-        tempdict = {'fun': self.optimCost.optimWrapper, 'x0': self.getState,
+        tempdict = {'fun': self.optimWrapper, 'x0': self.getState,
                     'args': (x, y), 'method': 'BFGS', 'jac': True,
                     'options': defaultoptions}
         for key, default in tempdict.items():
