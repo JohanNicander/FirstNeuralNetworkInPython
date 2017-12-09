@@ -70,9 +70,11 @@ def softmaxPrime(x):
 
 
 def linear(x, a=1):
-    if type(x) is not np.ndarray or type(a) is not np.ndarray:
+    if type(x) is not np.ndarray:
         raise TypeError("Wrong input type to linear")
-    return np.multiply(np.sum(x, 0), a)  # //TODO: Dimentioner och så...
+    temp = np.sum(x, 0)
+    temp.shape = [1, temp.size]
+    return np.multiply(a, temp)  # //TODO: Dimentioner och så...
 
 
 # def linearPRIME(a=1):

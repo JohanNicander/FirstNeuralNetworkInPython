@@ -249,7 +249,7 @@ class NeuralNet:
     def error(self, x, y):
         self.propagate(x)
         if type(y) is not np.ndarray or y.shape != self.a[-1].shape:
-            raise ValueError("y must be a numpy array of shape" +
+            raise ValueError("y must be a numpy array of shape " +
                              str([self.neuralShape[-1], x.shape[1]]))
         return np.multiply(np.divide(1, 2),
                            np.sum(np.square(np.subtract(self.a[-1], y))))
