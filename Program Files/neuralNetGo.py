@@ -9,3 +9,5 @@ x.shape = [3, 1]
 y = np.array([1, 0])
 y.shape = [2, 1]
 print(net.getState())
+net.optimCost(x, y)
+print(net.getState())
