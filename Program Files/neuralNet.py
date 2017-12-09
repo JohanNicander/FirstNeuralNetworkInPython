@@ -312,6 +312,8 @@ class NeuralNet:
         temp = self.getState()
         optimRes = optimize.minimize(**kwargs)
         if optimRes.success:
+            # DEBUG
+            print("yes")
             self.setState(optimRes.x)
         else:
             self.setState(temp)
