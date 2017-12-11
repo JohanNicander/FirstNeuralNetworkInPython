@@ -1,6 +1,7 @@
 import numpy as np
 import sys
 import io
+import os
 import neuralFuns as nf
 from scipy import optimize
 from tkinter import Tk
@@ -162,16 +163,26 @@ class NeuralNet:
     def save(self, location=None):
         Tk().withdraw()
         filename = asksaveasfilename(defaultextension=".nn",
-                                     filetypes=(("neural net file", "*.nn"),
+                                     initialdir=os.path.dirname(
+                                         os.path.abspath(__file__)),
+                                     filetypes=(("Neural Net File", "*.nn"),
                                                 ("All Files", "*.*")))
-        print(filename)
+        with open(filename, 'w+') as f:
+            f.write('This is a test\n')
+        f.close()
 
     def load(self, location=None):
         Tk().withdraw()
         filename = askopenfilename(defaultextension=".nn",
-                                   filetypes=(("neural net file", "*.nn"),
+                                   initialdir=os.path.dirname(
+                                       os.path.abspath(__file__)),
+                                   filetypes=(("Neural Net File", "*.nn"),
                                               ("All Files", "*.*")))
-        print(filename)
+        with open(filename, 'r') as f:
+            read_data = f.read()
+        f.close()
+        print(read_data)
+
 ###############################################################################
 # General NeuralNet functions
 ###############################################################################
