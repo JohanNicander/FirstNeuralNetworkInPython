@@ -3,7 +3,8 @@ import sys
 import io
 import neuralFuns as nf
 from scipy import optimize
-
+from tkinter import Tk
+from tkinter.filedialog import askopenfilename, asksaveasfilename
 
 sys.stdout = io.TextIOWrapper(sys.stdout.detach(), encoding='utf-8')
 sys.stderr = io.TextIOWrapper(sys.stderr.detach(), encoding='utf-8')
@@ -158,6 +159,19 @@ class NeuralNet:
             temp.extend(np.ndarray.tolist(b[i].ravel()))
         return np.array(temp)
 
+    def save(self, location=None):
+        Tk().withdraw()
+        filename = asksaveasfilename(defaultextension=".nn",
+                                     filetypes=(("neural net file", "*.nn"),
+                                                ("All Files", "*.*")))
+        print(filename)
+
+    def load(self, location=None):
+        Tk().withdraw()
+        filename = askopenfilename(defaultextension=".nn",
+                                   filetypes=(("neural net file", "*.nn"),
+                                              ("All Files", "*.*")))
+        print(filename)
 ###############################################################################
 # General NeuralNet functions
 ###############################################################################
