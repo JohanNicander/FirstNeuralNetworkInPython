@@ -62,12 +62,15 @@ class NeuralNet:
     #           k1 \in [0, inf), used directly in cost
     #           k2 \in (0, 1],  might be better to for golden ratio search (?)
 
-    def __init__(self, neuralShape, actfun=None, compfun=None, compfact=0):
+    def __init__(self, neuralShape, state=None, actfun=None, compfun=None,
+                 compfact=0):
         self.setNeuralShape(neuralShape)
         self.W = [None] * (neuralShape.size - 1)
         self.b = [None] * (neuralShape.size - 1)
-        self.setState(np.random.random_sample(np.dot(neuralShape[1:],
-                                                     neuralShape[:-1] + 1)))
+        if state is None:
+            state = np.random.random_sample(np.dot(neuralShape[1:],
+                                                   neuralShape[:-1] + 1))
+        self.setState(state)
 
         if actfun is None:
             actfun = [[nf.reLU, nf.reLUPrime]]
@@ -83,7 +86,18 @@ class NeuralNet:
         self.setCompFun(compfun)
         self.setCompFact(compfact)
 
-    # //TODO: Johan sidprojekt: Sygg toString
+    def __str__(self):
+        return str(self.getState())
+
+    def __repr__(self):
+        # s = ("NeuralNet(neuralShape=np.%r, state=np.%r actfun=nf.%s,"
+        #      " compfun=nf.%r, compfact=%r)")
+        # out = s % (self.neuralShape, self.getState(), self.actfun,
+        #            self.compfun, self.compfact)
+        out = "NeuralNet(neuralShape=np.%r, state=np.%r)" % (self.neuralShape,
+                                                             self.getState())
+        return out
+
 ###############################################################################
 # Setters and getters
 ###############################################################################
