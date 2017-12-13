@@ -68,8 +68,8 @@ class NeuralNet:
         self.W = [None] * (neuralShape.size - 1)
         self.b = [None] * (neuralShape.size - 1)
         if state is None:
-            state = np.random.random_sample(np.dot(neuralShape[1:],
-                                                   neuralShape[:-1] + 1))
+            state = np.random.random_sample(np.dot(neuralShape[:-1] + 1,
+                                                   neuralShape[1:]))
         self.setState(state)
 
         if actfun is None:
@@ -81,7 +81,6 @@ class NeuralNet:
         self.setActFun(actfun)
 
         if compfun is None:
-            def tempfun(x): return np.zeros(x.shape)
             compfun = [lambda x: 0, lambda x: np.zeros(x.shape)]
         self.setCompFun(compfun)
         self.setCompFact(compfact)
@@ -94,8 +93,8 @@ class NeuralNet:
         #      " compfun=nf.%r, compfact=%r)")
         # out = s % (self.neuralShape, self.getState(), self.actfun,
         #            self.compfun, self.compfact)
-        out = "NeuralNet(neuralShape=np.%r, state=np.%r)" % (self.neuralShape,
-                                                             self.getState())
+        out = "NeuralNet(neuralShape=np.%r, state=np.%r)" \
+              % (self.neuralShape, self.getState())
         return out
 
 ###############################################################################
@@ -149,19 +148,6 @@ class NeuralNet:
             self.b[i] = wlist[:self.neuralShape[i + 1]].reshape(
                 self.neuralShape[i + 1], 1)
             wlist = wlist[self.neuralShape[i + 1]:]
-
-# TODO Pick one
-# Similar to getState but should work
-    def getState2(self, W=None, b=None):
-        if W is None:
-            W = self.W
-        if b is None:
-            b = self.b
-        temp = np.array([])
-        for i in range(len(W)):
-            temp = np.concatenate((temp, np.concatenate((W[i].ravel(),
-                                                         b[i].ravel()))))
-        return temp
 
 # Another way to do things, which is better/faster?
     def getState(self, W=None, b=None):
@@ -275,7 +261,7 @@ class NeuralNet:
         temp = self.gradCost(x, y)
         return [self.cost(x, y), self.getState(*temp)]
 
-    def optimCost(self, x, y, setx=False, **kwargs):
+    def optimCost(self, x, y, setStateRegardless=False, **kwargs):
         # setx: sets W and b regardless of success
         if type(x) and type(y) is not np.ndarray:
             raise ValueError("Arguments must be numpy arrays")
@@ -294,7 +280,7 @@ class NeuralNet:
                 kwargs[key] = default
         temp = self.getState()
         optimRes = optimize.minimize(**kwargs)
-        if optimRes.success or setx:
+        if optimRes.success or setStateRegardless:
             self.setState(optimRes.x)
         else:
             self.setState(temp)
