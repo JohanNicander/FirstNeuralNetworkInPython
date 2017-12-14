@@ -162,27 +162,18 @@ class NeuralNet:
         return np.array(temp)
 
     def save(self, location=None):
-        Tk().withdraw()
-        filename = asksaveasfilename(defaultextension=".nn",
-                                     initialdir=os.path.dirname(
-                                         os.path.abspath(__file__)),
-                                     filetypes=(("Neural Net File", "*.nn"),
-                                                ("All Files", "*.*")))
-        with open(filename, 'w+') as f:
-            f.write('This is a test\n')
-        f.close()
+        if location is None:
+            Tk().withdraw()
+            location = asksaveasfilename(defaultextension=".nn",
+                                         initialdir=os.path.dirname(
+                                             os.path.abspath(__file__)),
+                                         filetypes=(("Neural Net File",
+                                                     "*.nn"),
+                                                    ("All Files", "*.*")))
 
-    def load(self, location=None):
-        Tk().withdraw()
-        filename = askopenfilename(defaultextension=".nn",
-                                   initialdir=os.path.dirname(
-                                       os.path.abspath(__file__)),
-                                   filetypes=(("Neural Net File", "*.nn"),
-                                              ("All Files", "*.*")))
-        with open(filename, 'r') as f:
-            read_data = f.read()
+        with open(location, 'w+') as f:
+            f.write(repr(self))
         f.close()
-        print(read_data)
 
 ###############################################################################
 # General NeuralNet functions
@@ -288,3 +279,20 @@ class NeuralNet:
 
     def train(self):
         pass
+
+###############################################################################
+# Outside class
+###############################################################################
+
+
+def load(location=None):
+    Tk().withdraw()
+    filename = askopenfilename(defaultextension=".nn",
+                               initialdir=os.path.dirname(
+                                   os.path.abspath(__file__)),
+                               filetypes=(("Neural Net File", "*.nn"),
+                                          ("All Files", "*.*")))
+    with open(filename, 'r') as f:
+        read_data = f.read()
+    f.close()
+    return eval(read_data)
