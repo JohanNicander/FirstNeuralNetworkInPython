@@ -86,6 +86,7 @@ class NeuralNet:
         self.setCompFact(compfact)
 
     def __str__(self):
+        # TODO: can't we do better than this?
         return str(self.getState())
 
     def __repr__(self):
@@ -251,6 +252,32 @@ class NeuralNet:
         # might be a good idea to eventually remove gradError (since it should
         # not be used) and do all calculations here instead
         return self.gradError(x, y)     # TODO: add complexity term
+
+    def gradErrorNumerical(self, x, y):
+        state = self.getState()
+        numgrad = np.zeros(state.shape)
+        perturb = np.zeros(state.shape)
+        e = 1e-6
+
+        for p in range(state.size):
+            # Set perturbation vector
+            perturb[p] = e
+            self.setState(state + perturb)
+            loss2 = self.cost(x, y)
+
+            self.setState(state - perturb)
+            loss1 = self.cost(x, y)
+
+            # Compute Numerical Gradient
+            numgrad[p] = (loss2 - loss1) / (2 * e)
+
+            # Return the value we changed to zero:
+            perturb[p] = 0
+
+        # Return Params to original value:
+        self.setState(state)
+
+        return numgrad
 
 ###############################################################################
 # Training and optimizing
