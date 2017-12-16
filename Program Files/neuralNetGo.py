@@ -12,9 +12,6 @@ def fun(x):
 plotx = np.linspace(start=-6 * math.pi, stop=10 * math.pi, num=1000).\
     reshape([1, 1000])
 ploty = fun(plotx)
-plt.plot(plotx.T, ploty.T, c='r')
-# plt.show()
-# quit()
 
 shape = np.array([1, 5, 5, 5, 5, 1])
 actfun = [[nf.sigmoid, nf.sigmoidPrime],
@@ -24,16 +21,6 @@ x = np.linspace(start=-4 * math.pi, stop=4 * math.pi, num=1000).\
     reshape([1, 1000])
 y = fun(x)
 y.shape = [1, y.size]
-
-######
-grad = net.getState(*net.gradError(x, y))
-numgrad = net.gradErrorNumerical(x, y)
-print(np.linalg.norm(grad))
-print(np.linalg.norm(numgrad))
-print(np.linalg.norm(grad - numgrad))
-
-# quit()
-# ####
 
 # BFGS, SLSQP
 print(net.cost(x, y))
@@ -48,6 +35,6 @@ print(res.message)
 print(res.success)
 print(net.gradCost(x, y))
 
-
+plt.plot(plotx.T, ploty.T, c='r')
 plt.plot(plotx.T, net.propagate(plotx).T, c='b')
 plt.show()
