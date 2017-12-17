@@ -57,18 +57,14 @@ def reLUPrime(x):
 def softmax(x):
     if type(x) is not np.ndarray:
         raise TypeError("Wrong input type to softmax")
-    # print(np.exp(x - np.max(x)))
-    print(np.sum(np.exp(x - np.max(x)), 0))
-    return np.divide(np.exp(x - np.max(x)), np.sum(np.exp(x - np.max(x)), 0))
-# //TODO: Kontrolera att summering är över rätt axel
-# //TODO: kan kanske villja göra något med -max eller nått för inte inf
+    e_x = np.exp(x - np.max(x))
+    return e_x / e_x.sum()
 
 
 def softmaxPrime(x):
     if type(x) is not np.ndarray:
         raise TypeError("Wrong input type to softmaxPRIME")
-    return np.multiply(np.square(softmax(x)), np.divide(np.sum(np.exp(x), 0),
-                                                        np.exp(x)) - 1)
+    return
 
 
 def linear(x, a=1):
