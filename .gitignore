@@ -2,3 +2,7 @@
 *.pyc
 
 Program Files/__pycache__/
+
+Program Files/Data/test/
+
+Program Files/Data/train/
