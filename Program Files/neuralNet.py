@@ -171,6 +171,7 @@ class NeuralNet:
                                          filetypes=(("Neural Net File",
                                                      "*.nn"),
                                                     ("All Files", "*.*")))
+
         with open(location, 'w+') as f:
             f.write(repr(self))
         f.close()
@@ -312,15 +313,13 @@ class NeuralNet:
 
 
 def load(location=None):
-    if location is None:
-        Tk().withdraw()
-        location = asksaveasfilename(defaultextension=".nn",
-                                     initialdir=os.path.dirname(
-                                         os.path.abspath(__file__)),
-                                     filetypes=(("Neural Net File",
-                                                 "*.nn"),
-                                                ("All Files", "*.*")))
-    with open(location, 'r') as f:
+    Tk().withdraw()
+    filename = askopenfilename(defaultextension=".nn",
+                               initialdir=os.path.dirname(
+                                   os.path.abspath(__file__)),
+                               filetypes=(("Neural Net File", "*.nn"),
+                                          ("All Files", "*.*")))
+    with open(filename, 'r') as f:
         read_data = f.read()
     f.close()
     return eval(read_data)
