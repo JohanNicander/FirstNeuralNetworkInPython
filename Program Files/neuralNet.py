@@ -225,8 +225,14 @@ class NeuralNet:
 
         # M = self.a[0].shape[1]
         O = np.ones([self.a[0].shape[1], 1])    # O = np.ones([M, 1])
-        d = [np.multiply(np.subtract(self.a[-1], y),
-                         self.actfun[1][1](self.z[-1]))]
+        temp = self.actfun[1][1](self.z[-1])
+        # TODO TODO TODO: might want to transpose something here to get correct shapes
+        if temp.ndim < 3:
+            tempshape = temp.shape
+            temp.shape = [1, *temp.shape]
+        # TODO TODO TODO: should this really be ...sum(axis=1)
+        d = [np.multiply(self.actfun[1][1](self.z[-1]),
+                         np.subtract(self.a[-1], y)).sum(axis=1)]
         dJdW = [np.dot(d[0], self.a[-2].T) / nrex]
         dJdb = [np.dot(d[0], O) / nrex]
         for i in range(2, self.neuralShape.size):
