@@ -57,17 +57,17 @@ def reLUPrime(x):
 def softmax(x):
     if type(x) is not np.ndarray:
         raise TypeError("Wrong input type to softmax")
-    print(x)
     e_x = np.exp(x - np.max(x))
-    print((e_x / e_x.sum(axis=0)))
     return e_x / e_x.sum(axis=0)
 
 
 def softmaxPrime(x):
     if type(x) is not np.ndarray:
         raise TypeError("Wrong input type to softmaxPRIME")
-    # //TODO: FIXA softmaxPRIME
-    return
+    S = softmax(x)
+    P = np.resize(np.identity(x.shape[0]), [x.shape[1], x.shape[0], x.shape[0]]).transpose(1, 2, 0)
+    Q = np.resize(S, [x.shape[0], x.shape[0], x.shape[1]]).transpose(1, 0, 2)
+    return np.multiply(P - Q, S)
 
 
 def linear(x, a=1):
